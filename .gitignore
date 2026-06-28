@@ -1,0 +1,6 @@
+node_modules/
+dist/
+.env
+.vercel/
+build/
+.DS_Store
