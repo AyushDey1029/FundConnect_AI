@@ -8,6 +8,8 @@ import CampaignUpdate from '../models/campaignUpdate.model.js';
 import Donation from '../models/donation.model.js';
 import Comment from '../models/comment.model.js';
 import Like from '../models/like.model.js';
+import Report from '../models/report.model.js';
+import Withdrawal from '../models/withdrawal.model.js';
 
 dotenv.config();
 
@@ -144,6 +146,48 @@ const importData = async () => {
       await Comment.insertMany(commentsToCreate);
       console.log(`${commentsToCreate.length} comments created.`);
     }
+
+    // 4. Create Campaign Updates, Reports and Withdrawals
+    const updatesToCreate = [];
+    const reportsToCreate = [];
+    const withdrawalsToCreate = [];
+
+    for (let i = 0; i < 15; i++) {
+      const campaign = faker.helpers.arrayElement(createdCampaigns);
+      updatesToCreate.push({
+        campaign: campaign._id,
+        creator: campaign.creator,
+        title: faker.lorem.words({ min: 3, max: 6 }),
+        description: faker.lorem.paragraph(),
+        media: [],
+      });
+    }
+
+    for (let i = 0; i < 10; i++) {
+      reportsToCreate.push({
+        user: faker.helpers.arrayElement(createdUsers)._id,
+        reason: faker.lorem.words(3),
+        description: faker.lorem.sentence(),
+        status: faker.helpers.arrayElement(['pending', 'reviewed', 'resolved']),
+        reportedItem: faker.helpers.arrayElement(createdCampaigns)._id,
+        onModel: 'Campaign'
+      });
+    }
+
+    for (let i = 0; i < 5; i++) {
+      const campaign = faker.helpers.arrayElement(createdCampaigns);
+      withdrawalsToCreate.push({
+        campaign: campaign._id,
+        user: campaign.creator,
+        amount: faker.number.int({ min: 100, max: campaign.raisedAmount || 1000 }),
+        status: faker.helpers.arrayElement(['pending', 'approved']),
+      });
+    }
+
+    await CampaignUpdate.insertMany(updatesToCreate);
+    await Report.insertMany(reportsToCreate);
+    await Withdrawal.insertMany(withdrawalsToCreate);
+    console.log(`${updatesToCreate.length} updates, ${reportsToCreate.length} reports, ${withdrawalsToCreate.length} withdrawals created.`);
 
     console.log('Data Import Completed Successfully!');
     process.exit();

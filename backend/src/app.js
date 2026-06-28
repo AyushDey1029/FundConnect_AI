@@ -6,7 +6,15 @@ import { errorHandler, notFound } from './middlewares/error.middleware.js';
 
 // Import Routes
 import authRoutes from './routes/auth.routes.js';
-// import userRoutes from './routes/user.routes.js';
+import userRoutes from './routes/user.routes.js';
+import campaignRoutes from './routes/campaign.routes.js';
+import donationRoutes from './routes/donation.routes.js';
+import commentRoutes from './routes/comment.routes.js';
+import likeRoutes from './routes/like.routes.js';
+import notificationRoutes from './routes/notification.routes.js';
+import reportRoutes from './routes/report.routes.js';
+import adminRoutes from './routes/admin.routes.js';
+import aiRoutes from './routes/ai.routes.js';
 
 const app = express();
 
@@ -28,7 +36,15 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/v1/auth', authRoutes);
-// app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/campaigns', campaignRoutes);
+app.use('/api/v1/donations', donationRoutes);
+app.use('/api/v1/campaigns/:campaignId/comments', commentRoutes);
+app.use('/api/v1/campaigns/:campaignId/likes', likeRoutes);
+app.use('/api/v1/notifications', notificationRoutes);
+app.use('/api/v1/reports', reportRoutes);
+app.use('/api/v1/admin', adminRoutes);
+app.use('/api/v1/ai', aiRoutes);
 
 // Error Handling Middlewares
 app.use(notFound);
