@@ -1,16 +1,17 @@
-# Phase 2: External Services & API Completion
+# Phase 4: Campaign Lifecycle
 
-- `[ ]` **External Services**
-  - `[ ]` `cloudinary.service.js`
-  - `[ ]` `razorpay.service.js`
-  - `[ ]` `openrouter.service.js`
-- `[ ]` **API Controllers & Routes**
-  - `[ ]` Campaign Controller & Routes
-  - `[ ]` Campaign Updates Controller & Routes
-  - `[ ]` Donations Controller & Routes
-  - `[ ]` Users Controller & Routes
-  - `[ ]` Interactions (Likes, Comments) Controller & Routes
-  - `[ ]` Admin Controller & Routes
-  - `[ ]` AI Controller & Routes
+- `[ ]` **Campaign Creation UI**
+  - `[ ]` Build Campaign Creation Form component
+  - `[ ]` Add image/video upload capabilities (connecting to Cloudinary)
+  - `[ ]` Form validation and error handling
+- `[ ]` **AI Writer Assistant**
+  - `[ ]` Integrate the AI Writer into the creation flow
+  - `[ ]` UI for prompting and generating campaign descriptions
+- `[ ]` **Campaign Details UI**
+  - `[ ]` Build the Campaign Details layout
+  - `[ ]` Integrate comments section (fetching and posting comments)
+  - `[ ]` Integrate campaign updates timeline
+  - `[ ]` Display donations list and progress bar
 - `[ ]` **Verification**
-  - `[ ]` Ensure all endpoints are mapped in `app.js`
+  - `[ ]` Test campaign creation flow end-to-end
+  - `[ ]` Test AI generation results in UI
