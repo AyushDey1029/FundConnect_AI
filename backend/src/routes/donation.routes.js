@@ -9,9 +9,9 @@ import { createDonationIntentValidator, verifyDonationValidator } from '../valid
 
 const router = express.Router({ mergeParams: true });
 
-router.post('/intent', protect, createDonationIntentValidator, validate, createDonationIntent);
-router.post('/verify', protect, verifyDonationValidator, validate, verifyDonation);
-router.get('/campaign', getCampaignDonations);
+router.post('/:campaignId/intent', protect, createDonationIntentValidator, validate, createDonationIntent);
+router.post('/:campaignId/verify', protect, verifyDonationValidator, validate, verifyDonation);
+router.get('/:campaignId/campaign', getCampaignDonations);
 router.get('/my-donations', protect, getUserDonations);
 router.get('/:donationId/receipt', protect, downloadReceipt);
 

@@ -31,7 +31,7 @@ const CampaignCard = ({ campaign }) => {
         description={campaign.description}
       />
       
-      <CampaignActions campaignId={campaign._id} />
+      <CampaignActions campaignId={campaign._id} creatorId={campaign.creator?._id || campaign.creator} />
       
       <CampaignFooter 
         likesCount={Math.floor(Math.random() * 50)} // Mock for now until API returns it

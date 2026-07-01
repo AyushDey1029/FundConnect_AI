@@ -1,7 +1,7 @@
 import { body } from 'express-validator';
 
 export const createDonationIntentValidator = [
-  body('amount').isNumeric().withMessage('Amount must be a number').isFloat({ gt: 0 }).withMessage('Amount must be greater than 0'),
+  body('amount').isNumeric().withMessage('Amount must be a number').isFloat({ min: 100 }).withMessage('Amount must be at least ₹100'),
 ];
 
 export const verifyDonationValidator = [

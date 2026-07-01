@@ -16,9 +16,9 @@ export const createDonationIntent = catchAsync(async (req, res, next) => {
 
   // Create Razorpay Order
   const options = {
-    amount: amount * 100, // Razorpay works in smallest currency unit (paise)
+    amount: Math.round(amount * 100), // Razorpay works in smallest currency unit (paise), must be an integer
     currency: 'INR',
-    receipt: `receipt_${Date.now()}_${campaignId}`,
+    receipt: `rcpt_${Date.now().toString().slice(-6)}_${campaignId.slice(-6)}`,
   };
 
   const order = await razorpayInstance.orders.create(options);
@@ -51,24 +51,42 @@ export const verifyDonation = catchAsync(async (req, res, next) => {
     return next(new AppError('Invalid payment signature', 400));
   }
 
-  const donation = await Donation.findOne({ razorpay_order_id });
+  // Atomically find and update to prevent concurrent race conditions
+  const donation = await Donation.findOneAndUpdate(
+    { razorpay_order_id, status: 'pending' },
+    { razorpay_payment_id, status: 'successful' },
+    { new: true }
+  );
+
   if (!donation) {
-    return next(new AppError('Donation record not found', 404));
+    const existing = await Donation.findOne({ razorpay_order_id });
+    if (existing && existing.status === 'successful') {
+      return res.status(200).json({ status: 'success', message: 'Already verified' });
+    }
+    return next(new AppError('Donation record not found or already processed', 404));
   }
 
-  if (donation.status === 'successful') {
-    return res.status(200).json({ status: 'success', message: 'Already verified' });
+  // Check if this is the user's first successful donation to this campaign
+  const previousDonationsCount = await Donation.countDocuments({
+    user: req.user._id,
+    campaign: campaignId,
+    status: 'successful',
+    _id: { $ne: donation._id } // Exclude the one we just updated
+  });
+
+  const isFirstDonation = previousDonationsCount === 0;
+
+  // Update campaign total atomically
+  const updateQuery = { $inc: { raisedAmount: donation.amount } };
+  if (isFirstDonation) {
+    updateQuery.$inc.donorsCount = 1;
   }
 
-  // Mark donation successful
-  donation.razorpay_payment_id = razorpay_payment_id;
-  donation.status = 'successful';
-  await donation.save();
-
-  // Update campaign total
-  const campaign = await Campaign.findById(campaignId);
-  campaign.raisedAmount += donation.amount;
-  await campaign.save();
+  const campaign = await Campaign.findByIdAndUpdate(
+    campaignId,
+    updateQuery,
+    { new: true }
+  );
 
   // Create notification for campaign creator
   await Notification.create({

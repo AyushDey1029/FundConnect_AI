@@ -1,10 +1,16 @@
 import React, { useState } from 'react';
 import { Heart, MessageCircle, Share2, Bookmark, IndianRupee } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import Button from '../ui/Button';
 
-const CampaignActions = ({ campaignId }) => {
+const CampaignActions = ({ campaignId, creatorId }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const navigate = useNavigate();
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
+  
+  const isCreator = isAuthenticated && user?._id === creatorId;
 
   return (
     <div className="px-4 py-3 flex items-center justify-between border-t border-gray-100 dark:border-gray-800">
@@ -33,10 +39,16 @@ const CampaignActions = ({ campaignId }) => {
           <Bookmark className={`w-5 h-5 ${isSaved ? 'fill-current' : ''}`} />
         </button>
 
-        <Button variant="primary" size="sm" className="pl-3">
-          <IndianRupee className="w-4 h-4 mr-1.5" />
-          Donate
-        </Button>
+        {isCreator ? (
+          <Button variant="outline" size="sm" className="pl-3 opacity-50 cursor-not-allowed">
+            Your Campaign
+          </Button>
+        ) : (
+          <Button variant="primary" size="sm" className="pl-3" onClick={() => navigate(`/campaigns/${campaignId}`)}>
+            <IndianRupee className="w-4 h-4 mr-1.5" />
+            Donate
+          </Button>
+        )}
       </div>
     </div>
   );

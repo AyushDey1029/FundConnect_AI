@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Share2, Tag } from 'lucide-react';
+import { useSelector } from 'react-redux';
+import { Share2, Tag, CheckCircle, X } from 'lucide-react';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import Button from '../components/ui/Button';
@@ -9,6 +10,7 @@ import Avatar from '../components/ui/Avatar';
 import Spinner from '../components/ui/Spinner';
 import CampaignUpdates from '../components/campaign/CampaignUpdates';
 import CampaignComments from '../components/campaign/CampaignComments';
+import CheckoutModal from '../components/campaign/CheckoutModal';
 import apiClient from '../services/apiClient';
 
 const CampaignDetails = () => {
@@ -16,18 +18,24 @@ const CampaignDetails = () => {
   const [campaign, setCampaign] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
+
+  const isCreator = isAuthenticated && user?._id === (campaign?.creator?._id || campaign?.creator);
+
+  const fetchCampaign = async () => {
+    try {
+      const response = await apiClient.get(`/campaigns/${id}`);
+      setCampaign(response.data.data.campaign);
+    } catch (err) {
+      setError('Failed to load campaign details.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchCampaign = async () => {
-      try {
-        const response = await apiClient.get(`/campaigns/${id}`);
-        setCampaign(response.data.data.campaign);
-      } catch (err) {
-        setError('Failed to load campaign details.');
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchCampaign();
   }, [id]);
 
@@ -56,6 +64,19 @@ const CampaignDetails = () => {
       <Navbar />
       
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+        
+        {showSuccess && (
+          <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-2xl flex items-center justify-between animate-in fade-in slide-in-from-top-4 duration-300">
+            <div className="flex items-center text-green-700 dark:text-green-400 font-medium">
+              <CheckCircle className="w-5 h-5 mr-3" />
+              Thank you! Your donation was successfully processed.
+            </div>
+            <button onClick={() => setShowSuccess(false)} className="text-green-500 hover:text-green-700 dark:hover:text-green-300">
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+        )}
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
           {/* Main Content Area (Continuous Scroll) */}
@@ -134,11 +155,18 @@ const CampaignDetails = () => {
                   </div>
                   <Progress value={(campaign.raisedAmount / campaign.goalAmount) * 100} max={100} className="mb-2" />
                   <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                    0 donations
+                    {campaign.donorsCount || 0} donations
                   </p>
                 </div>
 
-                <Button size="lg" fullWidth className="mb-3">Donate Now</Button>
+                {isCreator ? (
+                  <Button size="lg" fullWidth className="mb-3" disabled>
+                    This is your campaign
+                  </Button>
+                ) : (
+                  <Button size="lg" fullWidth className="mb-3" onClick={() => setIsCheckoutOpen(true)}>Donate Now</Button>
+                )}
+                
                 <Button size="lg" variant="outline" fullWidth onClick={handleShare}>
                   <Share2 className="w-4 h-4 mr-2" />
                   Share Campaign
@@ -179,6 +207,19 @@ const CampaignDetails = () => {
           </div>
         </div>
       </main>
+
+      {/* Checkout Modal */}
+      <CheckoutModal 
+        isOpen={isCheckoutOpen} 
+        onClose={() => setIsCheckoutOpen(false)} 
+        campaign={campaign} 
+        onSuccess={() => {
+          fetchCampaign(); // Refetch the campaign details to update amount & donors
+          setShowSuccess(true);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          setTimeout(() => setShowSuccess(false), 8000);
+        }} 
+      />
 
       <Footer />
     </div>
