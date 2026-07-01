@@ -13,7 +13,8 @@ const CampaignCard = ({ campaign }) => {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
   if (!campaign) return null;
 
-  const coverMedia = campaign.media?.[0]?.url || 'https://via.placeholder.com/600x400';
+  const hasMedia = campaign.media && campaign.media.length > 0;
+  const coverMedia = hasMedia ? campaign.media[0].url : null;
   const percentage = Math.min(100, Math.max(0, ((campaign.raisedAmount || 0) / campaign.goalAmount) * 100));
   const isCreator = isAuthenticated && user?._id === (campaign.creator?._id || campaign.creator);
 
@@ -27,11 +28,17 @@ const CampaignCard = ({ campaign }) => {
         
         {/* 1. Large Media */}
         <Link to={`/campaigns/${campaign._id}`} className="block relative aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-gray-800">
-          <img 
-            src={coverMedia} 
-            alt={campaign.title} 
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-          />
+          {coverMedia ? (
+            <img 
+              src={coverMedia} 
+              alt={campaign.title} 
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 transition-transform duration-500 group-hover:scale-105">
+              <span className="text-gray-400 dark:text-gray-600 font-medium tracking-wide">No image yet</span>
+            </div>
+          )}
           {campaign.trustScore && (
             <div className="absolute top-4 left-4">
               <Badge variant="green" className="shadow-sm backdrop-blur-md bg-white/90 dark:bg-gray-900/90 border border-green-100 dark:border-green-900">
