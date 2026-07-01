@@ -14,7 +14,7 @@ const Avatar = ({ src, alt = "User avatar", size = "md", className = "", fallbac
   };
 
   return (
-    <div className={`relative inline-flex items-center justify-center overflow-hidden bg-gray-100 dark:bg-gray-800 rounded-full shrink-0 ${sizes[size]} ${className}`}>
+    <div className={`relative inline-flex items-center justify-center overflow-hidden bg-gray-100 dark:bg-gray-800 rounded-full shrink-0 ring-1 ring-gray-200 dark:ring-gray-800 ${sizes[size]} ${className}`}>
       {src ? (
         <img 
           src={src} 

@@ -4,7 +4,9 @@ import { FileText, CheckCircle, Clock } from 'lucide-react';
 import apiClient from '../../services/apiClient';
 import Button from '../../components/ui/Button';
 import Spinner from '../../components/ui/Spinner';
+import EmptyState from '../../components/ui/EmptyState';
 import ReceiptModal from '../../components/campaign/ReceiptModal';
+import { motion } from 'framer-motion';
 
 const DonationHistory = () => {
   const [donations, setDonations] = useState([]);
@@ -57,9 +59,16 @@ const DonationHistory = () => {
       </div>
 
       {donations.length === 0 ? (
-        <div className="p-12 text-center text-gray-500 dark:text-gray-400">
-          <p>You haven't made any donations yet.</p>
-          <Link to="/" className="text-blue-500 hover:underline mt-2 inline-block">Explore campaigns to support</Link>
+        <div className="p-6">
+          <EmptyState 
+            title="No donations yet"
+            message="You haven't made any donations yet. Discover campaigns to support!"
+            action={
+              <Link to="/">
+                <Button>Explore Campaigns</Button>
+              </Link>
+            }
+          />
         </div>
       ) : (
         <div className="overflow-x-auto">
@@ -73,11 +82,26 @@ const DonationHistory = () => {
                 <th className="px-6 py-4 font-semibold text-right">Receipt</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
+            <motion.tbody 
+              initial="hidden"
+              animate="show"
+              variants={{
+                hidden: { opacity: 0 },
+                show: {
+                  opacity: 1,
+                  transition: { staggerChildren: 0.05 }
+                }
+              }}
+              className="divide-y divide-gray-200 dark:divide-gray-800"
+            >
               {donations.map((donation) => {
                 const coverImage = donation.campaign?.media?.find(m => m.type === 'image')?.url || 'https://via.placeholder.com/150';
                 return (
-                  <tr key={donation._id} className="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors">
+                  <motion.tr 
+                    key={donation._id} 
+                    variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}
+                    className="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors"
+                  >
                     <td className="px-6 py-4">
                       <Link to={`/campaigns/${donation.campaign?._id}`} className="flex items-center space-x-4 hover:opacity-80 transition-opacity">
                         <img src={coverImage} alt={donation.campaign?.title} className="w-10 h-10 rounded-lg object-cover bg-gray-100" />
@@ -120,10 +144,10 @@ const DonationHistory = () => {
                         </Button>
                       )}
                     </td>
-                  </tr>
+                  </motion.tr>
                 );
               })}
-            </tbody>
+            </motion.tbody>
           </table>
         </div>
       )}

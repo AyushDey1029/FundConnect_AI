@@ -4,14 +4,17 @@ import { useSelector } from 'react-redux';
 import { Share2, Tag, CheckCircle, X } from 'lucide-react';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
+import PageWrapper from '../components/layout/PageWrapper';
 import Button from '../components/ui/Button';
 import Progress from '../components/ui/Progress';
 import Avatar from '../components/ui/Avatar';
-import Spinner from '../components/ui/Spinner';
+import CampaignSkeleton from '../components/ui/CampaignSkeleton';
+import CountUp from '../components/ui/CountUp';
 import CampaignUpdates from '../components/campaign/CampaignUpdates';
 import CampaignComments from '../components/campaign/CampaignComments';
 import CheckoutModal from '../components/campaign/CheckoutModal';
 import apiClient from '../services/apiClient';
+import toast from 'react-hot-toast';
 
 const CampaignDetails = () => {
   const { id } = useParams();
@@ -19,10 +22,10 @@ const CampaignDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
   const { user, isAuthenticated } = useSelector((state) => state.auth);
 
-  const isCreator = isAuthenticated && user?._id === (campaign?.creator?._id || campaign?.creator);
+  const isCreator = isAuthenticated && campaign && user?._id === (campaign.creator?._id || campaign.creator);
+  const percentage = campaign ? Math.min(100, Math.max(0, ((campaign.raisedAmount || 0) / campaign.goalAmount) * 100)) : 0;
 
   const fetchCampaign = async () => {
     try {
@@ -36,6 +39,7 @@ const CampaignDetails = () => {
   };
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     fetchCampaign();
   }, [id]);
 
@@ -52,7 +56,17 @@ const CampaignDetails = () => {
   };
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950"><Spinner size="xl" /></div>;
+    return (
+      <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-950 transition-colors duration-200 pt-16">
+        <Navbar />
+        <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+          <div className="lg:col-span-2">
+            <CampaignSkeleton />
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
   }
 
   if (error || !campaign) {
@@ -63,19 +77,8 @@ const CampaignDetails = () => {
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-950 transition-colors duration-200 pt-16">
       <Navbar />
       
+      <PageWrapper>
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
-        
-        {showSuccess && (
-          <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-2xl flex items-center justify-between animate-in fade-in slide-in-from-top-4 duration-300">
-            <div className="flex items-center text-green-700 dark:text-green-400 font-medium">
-              <CheckCircle className="w-5 h-5 mr-3" />
-              Thank you! Your donation was successfully processed.
-            </div>
-            <button onClick={() => setShowSuccess(false)} className="text-green-500 hover:text-green-700 dark:hover:text-green-300">
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
@@ -144,19 +147,30 @@ const CampaignDetails = () => {
               
               {/* Donate Card */}
               <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 p-6">
-                <div className="mb-6">
-                  <div className="flex items-end space-x-2 mb-2">
-                    <span className="text-4xl font-extrabold text-gray-900 dark:text-white">
-                      ₹{campaign.raisedAmount?.toLocaleString()}
-                    </span>
-                    <span className="text-gray-500 dark:text-gray-400 pb-1">
-                      raised of ₹{campaign.goalAmount?.toLocaleString()}
+                {/* Progress Details */}
+                <div className="flex justify-between items-end mb-2">
+                  <div className="flex flex-col sm:flex-row sm:items-baseline sm:space-x-1 text-gray-900 dark:text-white tabular-nums">
+                    <CountUp value={campaign.raisedAmount || 0} prefix="₹" className="text-3xl sm:text-4xl font-extrabold tracking-tight" />
+                    <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mt-1 sm:mt-0">
+                      raised of <CountUp value={campaign.goalAmount} prefix="₹" /> goal
                     </span>
                   </div>
-                  <Progress value={(campaign.raisedAmount / campaign.goalAmount) * 100} max={100} className="mb-2" />
-                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                    {campaign.donorsCount || 0} donations
-                  </p>
+                  <div className="text-lg sm:text-xl font-bold text-gray-400 dark:text-gray-500 min-w-[3ch] text-right">
+                    {Math.round(percentage)}%
+                  </div>
+                </div>
+                
+                <Progress value={percentage} className="h-3 mb-4" />
+                
+                <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400 font-medium mb-6">
+                  <div className="flex items-center">
+                    <CheckCircle className="w-4 h-4 mr-1.5" />
+                    <CountUp value={campaign.donorsCount || 0} /> <span className="ml-1">donors</span>
+                  </div>
+                  <div className="flex items-center">
+                    <Tag className="w-4 h-4 mr-1.5" />
+                    {campaign.category}
+                  </div>
                 </div>
 
                 {isCreator ? (
@@ -207,6 +221,7 @@ const CampaignDetails = () => {
           </div>
         </div>
       </main>
+      </PageWrapper>
 
       {/* Checkout Modal */}
       <CheckoutModal 
@@ -214,10 +229,8 @@ const CampaignDetails = () => {
         onClose={() => setIsCheckoutOpen(false)} 
         campaign={campaign} 
         onSuccess={() => {
-          fetchCampaign(); // Refetch the campaign details to update amount & donors
-          setShowSuccess(true);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-          setTimeout(() => setShowSuccess(false), 8000);
+          fetchCampaign(); 
+          toast.success('Thank you! Your donation was successfully processed.', { duration: 5000 });
         }} 
       />
 

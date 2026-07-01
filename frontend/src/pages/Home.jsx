@@ -2,11 +2,14 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
+import PageWrapper from '../components/layout/PageWrapper';
 import CampaignCard from '../components/campaign/CampaignCard';
 import Button from '../components/ui/Button';
-import Spinner from '../components/ui/Spinner';
+import EmptyState from '../components/ui/EmptyState';
+import CampaignSkeleton from '../components/ui/CampaignSkeleton';
 import { useCampaigns } from '../hooks/useCampaigns';
 import { Flame, Sparkles, TrendingUp } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const Home = () => {
   const { campaigns, loading, error, hasMore, loadMore, loadingMore } = useCampaigns();
@@ -16,20 +19,22 @@ const Home = () => {
       <Navbar />
       
       <main className="flex-1">
+        <PageWrapper>
         {/* Hero Section */}
-        <section className="bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800">
-          <div className="max-w-4xl mx-auto px-4 py-12 sm:py-16 text-center">
-            <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-4">
-              Fund the future, <span className="text-blue-600">together.</span>
+        <section className="relative overflow-hidden bg-white dark:bg-gray-950 pt-24 pb-16 sm:pt-32 sm:pb-24">
+          <div className="max-w-5xl mx-auto px-4 text-center">
+            <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-6 leading-[1.1]">
+              Fund the future, <br className="hidden sm:block" />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-emerald-500">together.</span>
             </h1>
-            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-8">
+            <p className="text-lg sm:text-xl text-gray-500 dark:text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed font-light">
               Discover and support verified campaigns with AI-powered trust scores. Join a community of changemakers today.
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6">
               <Link to="/campaigns/create">
-                <Button size="lg" className="w-full sm:w-auto">Start a Campaign</Button>
+                <Button size="lg" className="w-full sm:w-auto h-12 px-8 text-base shadow-lg shadow-blue-500/20">Start a Campaign</Button>
               </Link>
-              <Button size="lg" variant="outline" className="w-full sm:w-auto">Explore Causes</Button>
+              <Button size="lg" variant="outline" className="w-full sm:w-auto h-12 px-8 text-base">Explore Causes</Button>
             </div>
           </div>
         </section>
@@ -56,9 +61,10 @@ const Home = () => {
         {/* Main Feed */}
         <section className="max-w-2xl mx-auto px-4 pb-12">
           {loading ? (
-            <div className="py-20 flex flex-col items-center">
-              <Spinner size="lg" className="mb-4" />
-              <p className="text-gray-500 dark:text-gray-400">Loading campaigns...</p>
+            <div className="space-y-6">
+              {[1, 2, 3].map((n) => (
+                <CampaignSkeleton key={n} />
+              ))}
             </div>
           ) : error ? (
             <div className="py-12 text-center bg-white dark:bg-gray-900 rounded-xl border border-red-100 dark:border-red-900/30">
@@ -66,15 +72,38 @@ const Home = () => {
               <Button onClick={() => window.location.reload()} variant="outline">Try Again</Button>
             </div>
           ) : campaigns.length === 0 ? (
-            <div className="py-20 text-center bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800">
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No campaigns found</h3>
-              <p className="text-gray-500 dark:text-gray-400">Check back later for new causes to support.</p>
-            </div>
+            <EmptyState 
+              title="No campaigns found"
+              message="Check back later for new causes to support."
+            />
           ) : (
-            <div className="space-y-6">
-              {campaigns.map(campaign => (
-                <CampaignCard key={campaign._id} campaign={campaign} />
-              ))}
+            <div className="space-y-8">
+              <motion.div 
+                initial="hidden"
+                animate="show"
+                variants={{
+                  hidden: { opacity: 0 },
+                  show: {
+                    opacity: 1,
+                    transition: {
+                      staggerChildren: 0.1
+                    }
+                  }
+                }}
+                className="space-y-8"
+              >
+                {campaigns.map(campaign => (
+                  <motion.div 
+                    key={campaign._id}
+                    variants={{
+                      hidden: { opacity: 0, y: 20 },
+                      show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+                    }}
+                  >
+                    <CampaignCard campaign={campaign} />
+                  </motion.div>
+                ))}
+              </motion.div>
               
               {hasMore && (
                 <div className="pt-4 text-center">
@@ -97,6 +126,7 @@ const Home = () => {
             </div>
           )}
         </section>
+        </PageWrapper>
       </main>
 
       <Footer />

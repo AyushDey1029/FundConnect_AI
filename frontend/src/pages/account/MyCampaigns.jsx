@@ -4,6 +4,8 @@ import { MoreVertical, Eye, Edit2, BarChart2, MessageSquare, Trash2, CheckCircle
 import apiClient from '../../services/apiClient';
 import Button from '../../components/ui/Button';
 import Spinner from '../../components/ui/Spinner';
+import EmptyState from '../../components/ui/EmptyState';
+import { motion } from 'framer-motion';
 
 const MyCampaigns = () => {
   const [campaigns, setCampaigns] = useState([]);
@@ -70,9 +72,16 @@ const MyCampaigns = () => {
       </div>
 
       {campaigns.length === 0 ? (
-        <div className="p-12 text-center text-gray-500 dark:text-gray-400">
-          <p>You haven't created any campaigns yet.</p>
-          <Link to="/campaigns/create" className="text-blue-500 hover:underline mt-2 inline-block">Start your first campaign</Link>
+        <div className="p-6">
+          <EmptyState 
+            title="No campaigns yet"
+            message="You haven't created any campaigns yet."
+            action={
+              <Link to="/campaigns/create">
+                <Button>Start your first campaign</Button>
+              </Link>
+            }
+          />
         </div>
       ) : (
         <div className="overflow-x-auto">
@@ -87,11 +96,31 @@ const MyCampaigns = () => {
                 <th className="px-6 py-4 font-semibold text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
+            <motion.tbody 
+              initial="hidden"
+              animate="show"
+              variants={{
+                hidden: { opacity: 0 },
+                show: {
+                  opacity: 1,
+                  transition: {
+                    staggerChildren: 0.05
+                  }
+                }
+              }}
+              className="divide-y divide-gray-200 dark:divide-gray-800"
+            >
               {campaigns.map((campaign) => {
                 const coverImage = campaign.media?.find(m => m.type === 'image')?.url || 'https://via.placeholder.com/150';
                 return (
-                  <tr key={campaign._id} className="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors">
+                  <motion.tr 
+                    key={campaign._id} 
+                    variants={{
+                      hidden: { opacity: 0, y: 10 },
+                      show: { opacity: 1, y: 0 }
+                    }}
+                    className="hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors"
+                  >
                     <td className="px-6 py-4">
                       <div className="flex items-center space-x-4">
                         <img src={coverImage} alt={campaign.title} className="w-12 h-12 rounded-lg object-cover bg-gray-100" />
@@ -183,10 +212,10 @@ const MyCampaigns = () => {
                         </>
                       )}
                     </td>
-                  </tr>
+                  </motion.tr>
                 );
               })}
-            </tbody>
+            </motion.tbody>
           </table>
         </div>
       )}

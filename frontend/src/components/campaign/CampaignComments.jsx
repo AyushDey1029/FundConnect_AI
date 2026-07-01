@@ -4,6 +4,7 @@ import { MessageSquare, CornerDownRight } from 'lucide-react';
 import apiClient from '../../services/apiClient';
 import Button from '../ui/Button';
 import Avatar from '../ui/Avatar';
+import EmptyState from '../ui/EmptyState';
 import { formatDate } from '../../utils/formatDate';
 
 const CampaignComments = ({ campaignId }) => {
@@ -98,7 +99,10 @@ const CampaignComments = ({ campaignId }) => {
 
       {/* Comment List */}
       {comments.length === 0 ? (
-        <p className="text-gray-500 dark:text-gray-400 text-center py-4">No comments yet. Be the first!</p>
+        <EmptyState 
+          title="No comments yet"
+          message="Be the first to share your thoughts on this campaign."
+        />
       ) : (
         <div className="space-y-6">
           {comments.map((comment) => (
