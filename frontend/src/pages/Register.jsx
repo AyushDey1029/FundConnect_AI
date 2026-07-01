@@ -27,7 +27,13 @@ const Register = () => {
         navigate('/');
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+      const errorData = err.response?.data;
+      if (errorData?.errors && Array.isArray(errorData.errors)) {
+        const errorMessages = errorData.errors.map(e => Object.values(e)[0]).join(', ');
+        setError(errorMessages);
+      } else {
+        setError(errorData?.message || 'Registration failed. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
