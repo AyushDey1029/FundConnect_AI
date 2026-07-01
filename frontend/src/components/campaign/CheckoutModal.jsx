@@ -16,6 +16,8 @@ const CheckoutModal = ({ isOpen, onClose, campaign, onSuccess }) => {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
   const navigate = useNavigate();
 
+  const remainingAmount = Math.max(0, (campaign?.goalAmount || 0) - (campaign?.raisedAmount || 0));
+
   // Load Razorpay script dynamically
   useEffect(() => {
     if (isOpen) {
@@ -50,6 +52,11 @@ const CheckoutModal = ({ isOpen, onClose, campaign, onSuccess }) => {
 
     if (!amount || amount < 100) {
       setError('Minimum donation amount is ₹100');
+      return;
+    }
+
+    if (amount > remainingAmount) {
+      setError(`Maximum allowed donation is ₹${remainingAmount.toLocaleString()}`);
       return;
     }
 
@@ -158,9 +165,12 @@ const CheckoutModal = ({ isOpen, onClose, campaign, onSuccess }) => {
               <button
                 key={amt}
                 onClick={() => handleAmountSelect(amt)}
+                disabled={amt > remainingAmount}
                 className={`py-3 rounded-xl font-bold transition-all border-2 ${
                   amount === amt && !isCustom
                     ? 'border-blue-600 bg-blue-50 text-blue-700 dark:border-blue-500 dark:bg-blue-900/20 dark:text-blue-400'
+                    : amt > remainingAmount
+                    ? 'border-gray-100 bg-gray-50 text-gray-300 dark:border-gray-800 dark:bg-gray-900/50 dark:text-gray-600 cursor-not-allowed'
                     : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:border-gray-600'
                 }`}
               >
@@ -185,6 +195,7 @@ const CheckoutModal = ({ isOpen, onClose, campaign, onSuccess }) => {
                 <input
                   type="number"
                   min="100"
+                  max={remainingAmount}
                   value={amount}
                   onChange={(e) => setAmount(Number(e.target.value))}
                   className="block w-full pl-8 pr-4 py-3 border-2 border-blue-600 rounded-xl leading-5 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none font-bold text-lg"
@@ -205,9 +216,9 @@ const CheckoutModal = ({ isOpen, onClose, campaign, onSuccess }) => {
             size="lg" 
             fullWidth 
             onClick={handleDonate} 
-            disabled={loading || !amount || amount < 100}
+            disabled={loading || !amount || amount < 100 || amount > remainingAmount || remainingAmount === 0}
           >
-            {loading ? 'Processing...' : `Donate ₹${amount || 0}`}
+            {remainingAmount === 0 ? 'Goal Reached' : (loading ? 'Processing...' : `Donate ₹${amount || 0}`)}
           </Button>
 
           <div className="mt-4 flex items-center justify-center text-xs text-gray-500 dark:text-gray-400 font-medium">
