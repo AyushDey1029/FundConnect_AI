@@ -22,7 +22,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
-    origin: process.env.CLIENT_URL || '*',
+    origin: process.env.CLIENT_URL ? process.env.CLIENT_URL.split(',') : '*',
     credentials: true,
 }));
 app.use(helmet());
