@@ -4,9 +4,10 @@ import Navbar from '../../components/layout/Navbar';
 import Footer from '../../components/layout/Footer';
 import { User, Grid, Heart, Clock, Settings as SettingsIcon } from 'lucide-react';
 
+import MyCampaigns from './MyCampaigns';
+
 // Stub components for sub-pages
 const Overview = () => <div className="p-6 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800"><h2 className="text-xl font-bold mb-4">Account Overview</h2><p className="text-gray-500">Overview content coming soon.</p></div>;
-const MyCampaigns = () => <div className="p-6 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800"><h2 className="text-xl font-bold mb-4">My Campaigns</h2><p className="text-gray-500">Campaigns list coming soon.</p></div>;
 const DonationHistory = () => <div className="p-6 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800"><h2 className="text-xl font-bold mb-4">Donation History</h2><p className="text-gray-500">History coming soon.</p></div>;
 const SavedCampaigns = () => <div className="p-6 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800"><h2 className="text-xl font-bold mb-4">Saved Campaigns</h2><p className="text-gray-500">Saved items coming soon.</p></div>;
 const Settings = () => <div className="p-6 bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800"><h2 className="text-xl font-bold mb-4">Account Settings</h2><p className="text-gray-500">Settings coming soon.</p></div>;

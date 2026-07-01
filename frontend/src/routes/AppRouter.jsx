@@ -8,6 +8,7 @@ import Home from '../pages/Home.jsx';
 import Login from '../pages/Login.jsx';
 import Register from '../pages/Register.jsx';
 import CampaignDetails from '../pages/CampaignDetails.jsx';
+import CreateCampaign from '../pages/campaign/CreateCampaign.jsx';
 import AccountLayout from '../pages/account/AccountLayout.jsx';
 
 const AppRouter = () => {
@@ -23,6 +24,7 @@ const AppRouter = () => {
       {/* Protected Routes */}
       <Route element={<ProtectedRoute />}>
         <Route path="/account/*" element={<AccountLayout />} />
+        <Route path="/campaigns/create" element={<CreateCampaign />} />
       </Route>
       
       <Route path="*" element={<div className="flex items-center justify-center h-screen text-2xl font-bold">404 Not Found</div>} />

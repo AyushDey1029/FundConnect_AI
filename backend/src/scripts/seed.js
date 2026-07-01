@@ -93,7 +93,11 @@ const importData = async () => {
         raisedAmount,
         deadline: faker.date.future({ years: 1 }),
         category: faker.helpers.arrayElement(categories),
-        media: [faker.image.urlLoremFlickr({ category: 'nature' })],
+        media: [{
+          url: faker.image.urlLoremFlickr({ category: 'nature' }),
+          type: 'image',
+          objectPosition: '50% 50%'
+        }],
         status: faker.helpers.arrayElement(statuses),
         isVerified: faker.datatype.boolean({ probability: 0.5 }),
         trustScore: {

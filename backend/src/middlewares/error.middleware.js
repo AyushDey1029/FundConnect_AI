@@ -14,6 +14,12 @@ export const errorHandler = (err, req, res, next) => {
         statusCode = 404;
     }
 
+    // Handle JWT errors
+    if (err.name === 'JsonWebTokenError' || err.name === 'TokenExpiredError') {
+        message = 'Invalid or expired token. Please log in again.';
+        statusCode = 401;
+    }
+
     res.status(statusCode).json({
         message,
         stack: process.env.NODE_ENV === 'production' ? '🥞' : err.stack,

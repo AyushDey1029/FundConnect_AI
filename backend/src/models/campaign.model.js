@@ -40,23 +40,38 @@ const campaignSchema = new mongoose.Schema(
         'Animal Welfare',
         'NGO',
         'Disaster Relief',
+        'Technology',
+        'Creative',
+        'Community',
+        'Health',
         'Other'
       ],
       required: [true, 'Category is required'],
     },
     media: [
       {
-        type: String, // Cloudinary URLs
+        url: { type: String }, // Cloudinary URLs
+        type: { type: String, enum: ['image', 'video'] },
+        objectPosition: { type: String, default: '50% 50%' }
       }
     ],
     status: {
       type: String,
-      enum: ['pending', 'approved', 'rejected', 'suspended'],
-      default: 'pending',
+      enum: ['draft', 'active', 'completed', 'cancelled'],
+      default: 'active',
     },
-    isVerified: {
-      type: Boolean,
-      default: false,
+    verificationStatus: {
+      type: String,
+      enum: ['pending', 'verified', 'rejected'],
+      default: 'verified',
+    },
+    deletedAt: {
+      type: Date,
+      default: null,
+    },
+    donorsCount: {
+      type: Number,
+      default: 0,
     },
     trustScore: {
       score: {

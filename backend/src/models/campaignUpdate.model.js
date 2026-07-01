@@ -24,7 +24,9 @@ const campaignUpdateSchema = new mongoose.Schema(
     },
     media: [
       {
-        type: String, // Cloudinary URLs
+        url: { type: String }, // Cloudinary URLs
+        type: { type: String, enum: ['image', 'video'] },
+        objectPosition: { type: String, default: '50% 50%' }
       }
     ],
   },

@@ -22,7 +22,7 @@ const Login = () => {
     try {
       const response = await apiClient.post('/auth/login', { email, password });
       if (response.data.status === 'success') {
-        dispatch(loginSuccess(response.data.data));
+        dispatch(loginSuccess({ user: response.data.data.user, token: response.data.token }));
         navigate('/');
       }
     } catch (err) {

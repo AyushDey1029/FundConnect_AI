@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import CampaignCard from '../components/campaign/CampaignCard';
@@ -25,7 +26,9 @@ const Home = () => {
               Discover and support verified campaigns with AI-powered trust scores. Join a community of changemakers today.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-              <Button size="lg" className="w-full sm:w-auto">Start a Campaign</Button>
+              <Link to="/campaigns/create">
+                <Button size="lg" className="w-full sm:w-auto">Start a Campaign</Button>
+              </Link>
               <Button size="lg" variant="outline" className="w-full sm:w-auto">Explore Causes</Button>
             </div>
           </div>

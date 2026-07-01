@@ -24,7 +24,8 @@ export const generateAIResponse = async (prompt, model = 'google/gemini-2.5-flas
   try {
     const response = await openRouterClient.post('', {
       model: model,
-      messages: [{ role: 'user', content: prompt }]
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: 4000
     });
 
     return response.data.choices[0].message.content;

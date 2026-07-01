@@ -14,8 +14,8 @@ This file serves as a persistent state and context tracker for the FundConnect A
   - **Razorpay:** Payment gateway (Test mode).
 - **Deployment:** Vercel (monorepo).
 
-## 2. Current Progress: Phases 1, 2 & 3 Completed
-As of the latest session, **Phase 1 (Foundation)**, **Phase 2 (API Completion)**, and **Phase 3 (Frontend Feed & Navigation)** are 100% complete.
+## 2. Current Progress: Phases 1, 2, 3 & 4 Completed, Phase 5 in Progress
+As of the latest session, **Phase 1 (Foundation)**, **Phase 2 (API Completion)**, **Phase 3 (Frontend Feed & Navigation)**, and **Phase 4 (Campaign Lifecycle)** are 100% complete. In **Phase 5**, the My Campaigns Dashboard has been built.
 
 ### What has been built so far:
 1. **MongoDB Models (`backend/src/models/`):**
@@ -38,17 +38,19 @@ As of the latest session, **Phase 1 (Foundation)**, **Phase 2 (API Completion)**
    - Routing and pages for Feed, Campaign Details, Profile, Authentication.
    - Core Social Media style feed component.
    - Reusable UI components (layout, ui, common).
+6. **Campaign Lifecycle UI:**
+   - 4-step Campaign Creation Wizard with validation and media uploads (Cloudinary).
+   - AI Writer Assistant integrated into the creation flow (OpenRouter).
+   - Comprehensive Campaign Details UI with story, updates, comments, donations, and AI Trust Summary.
 
-## 3. What to do next: Phase 4
-The next immediate step is to start **Phase 4: Campaign Lifecycle**.
+## 3. What to do next: Phase 5 Continuation
+We are currently in **Phase 5: Donations & Profiles**.
 
-### Tasks for Phase 4:
-1. Create the Campaign Creation form UI.
-2. Integrate the AI Writer Assistant (using the OpenRouter backend service).
-3. Build the comprehensive Campaign Details UI (incorporating updates, comments, donations).
+### Tasks remaining for Phase 5:
+1. Build the Checkout UI and integrate Razorpay for donations.
+2. Build the Donation History section of the User Dashboard. (The 'My Campaigns' management dashboard is complete).
 
 ## 4. Future Phases Overview
-- **Phase 5:** Donations & Profiles (Razorpay checkout UI, User dashboard).
 - **Phase 6:** Admin Moderation & Quality Checker (Admin dashboard for approvals and AI Trust Score generation UI).
 
-*(Note to Agent: If you are reading this after a restart, refer to this document as the single source of truth for the project's current state and proceed directly to Phase 4).*
+*(Note to Agent: If you are reading this after a restart, refer to this document as the single source of truth for the project's current state and proceed directly to Phase 5).*

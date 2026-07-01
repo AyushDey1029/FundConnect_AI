@@ -1,16 +1,23 @@
 import React from 'react';
 
 const CampaignMedia = ({ media, title, trustScore }) => {
-  // We take the first media item as the cover, or a fallback
-  const coverImage = media && media.length > 0 ? media[0] : 'https://placehold.co/600x400/e2e8f0/475569?text=No+Image';
+  const hasMedia = media && media.length > 0;
+  const coverMedia = hasMedia ? media[0] : null;
+  const isVideo = coverMedia?.type === 'video';
+  const srcUrl = coverMedia?.url || (typeof coverMedia === 'string' ? coverMedia : 'https://placehold.co/600x400/e2e8f0/475569?text=No+Image');
 
   return (
     <div className="relative w-full h-64 sm:h-80 bg-gray-100 dark:bg-gray-800 overflow-hidden group">
-      <img 
-        src={coverImage} 
-        alt={title} 
-        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-      />
+      {isVideo ? (
+        <video src={srcUrl} autoPlay muted loop className="w-full h-full object-cover" />
+      ) : (
+        <img 
+          src={srcUrl} 
+          alt={title} 
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          style={{ objectPosition: coverMedia?.objectPosition || '50% 50%' }}
+        />
+      )}
       
       {trustScore && trustScore.score && (
         <div className="absolute top-4 right-4 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md px-3 py-1 rounded-full shadow-sm flex items-center space-x-1.5 border border-white/20">

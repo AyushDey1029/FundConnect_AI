@@ -7,11 +7,24 @@ import { uploadToCloudinary, deleteFromCloudinary } from '../services/cloudinary
 export const createCampaign = catchAsync(async (req, res, next) => {
   const { title, description, goalAmount, category, deadline } = req.body;
 
+  let mediaMeta = [];
+  if (req.body.mediaMeta) {
+    try {
+      mediaMeta = JSON.parse(req.body.mediaMeta);
+    } catch(e) {}
+  }
+
   let mediaUrls = [];
   if (req.files && req.files.length > 0) {
-    for (const file of req.files) {
+    for (let i=0; i<req.files.length; i++) {
+      const file = req.files[i];
       const result = await uploadToCloudinary(file.buffer, 'campaigns');
-      mediaUrls.push(result.secure_url);
+      let meta = mediaMeta[i] || { type: 'image', objectPosition: '50% 50%' };
+      mediaUrls.push({
+        url: result.secure_url,
+        type: meta.type,
+        objectPosition: meta.objectPosition
+      });
     }
   }
 
@@ -35,7 +48,7 @@ export const createCampaign = catchAsync(async (req, res, next) => {
 
 export const getTrendingCampaigns = catchAsync(async (req, res, next) => {
   // Mock trending logic: sort by raisedAmount and limit
-  const campaigns = await Campaign.find({ isVerified: true, status: 'approved' })
+  const campaigns = await Campaign.find({ status: 'active', deletedAt: null })
     .sort({ raisedAmount: -1 })
     .limit(10)
     .populate('creator', 'name avatar');
@@ -44,7 +57,7 @@ export const getTrendingCampaigns = catchAsync(async (req, res, next) => {
 });
 
 export const getNewestCampaigns = catchAsync(async (req, res, next) => {
-  const campaigns = await Campaign.find({ isVerified: true, status: 'approved' })
+  const campaigns = await Campaign.find({ status: 'active', deletedAt: null })
     .sort({ createdAt: -1 })
     .limit(10)
     .populate('creator', 'name avatar');
@@ -54,7 +67,7 @@ export const getNewestCampaigns = catchAsync(async (req, res, next) => {
 
 export const getCampaignsByCategory = catchAsync(async (req, res, next) => {
   const { category } = req.params;
-  const campaigns = await Campaign.find({ category, isVerified: true, status: 'approved' })
+  const campaigns = await Campaign.find({ category, status: 'active', deletedAt: null })
     .sort({ createdAt: -1 })
     .populate('creator', 'name avatar');
 
@@ -66,7 +79,7 @@ export const getFeed = catchAsync(async (req, res, next) => {
   const limit = parseInt(req.query.limit, 10) || 10;
   const skip = (page - 1) * limit;
 
-  const campaigns = await Campaign.find({ isVerified: true, status: 'approved' })
+  const campaigns = await Campaign.find({ status: 'active', deletedAt: null })
     .sort({ createdAt: -1 })
     .skip(skip)
     .limit(limit)
@@ -98,13 +111,26 @@ export const updateCampaign = catchAsync(async (req, res, next) => {
 
   const { title, description, goalAmount, category, deadline } = req.body;
 
+  let mediaMeta = [];
+  if (req.body.mediaMeta) {
+    try {
+      mediaMeta = JSON.parse(req.body.mediaMeta);
+    } catch(e) {}
+  }
+
   let mediaUrls = campaign.media;
   if (req.files && req.files.length > 0) {
     // Optionally delete old media here
     mediaUrls = [];
-    for (const file of req.files) {
+    for (let i=0; i<req.files.length; i++) {
+      const file = req.files[i];
       const result = await uploadToCloudinary(file.buffer, 'campaigns');
-      mediaUrls.push(result.secure_url);
+      let meta = mediaMeta[i] || { type: 'image', objectPosition: '50% 50%' };
+      mediaUrls.push({
+        url: result.secure_url,
+        type: meta.type,
+        objectPosition: meta.objectPosition
+      });
     }
   }
 
@@ -131,9 +157,17 @@ export const deleteCampaign = catchAsync(async (req, res, next) => {
     return next(new AppError('You do not have permission to delete this campaign', 403));
   }
 
-  await campaign.deleteOne();
+  campaign.deletedAt = Date.now();
+  await campaign.save();
 
   res.status(204).json({ status: 'success', data: null });
+});
+
+export const getMyCampaigns = catchAsync(async (req, res, next) => {
+  const campaigns = await Campaign.find({ creator: req.user._id, deletedAt: null })
+    .sort({ createdAt: -1 });
+
+  res.status(200).json({ status: 'success', results: campaigns.length, data: { campaigns } });
 });
 
 // Updates Handlers
@@ -152,7 +186,11 @@ export const addCampaignUpdate = catchAsync(async (req, res, next) => {
   if (req.files && req.files.length > 0) {
     for (const file of req.files) {
       const result = await uploadToCloudinary(file.buffer, 'updates');
-      mediaUrls.push(result.secure_url);
+      mediaUrls.push({
+        url: result.secure_url,
+        type: 'image', // Updates typically just handle images for now
+        objectPosition: '50% 50%'
+      });
     }
   }
 
