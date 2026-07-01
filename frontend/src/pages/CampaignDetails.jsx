@@ -177,6 +177,10 @@ const CampaignDetails = () => {
                   <Button size="lg" fullWidth className="mb-3" disabled>
                     This is your campaign
                   </Button>
+                ) : percentage >= 100 ? (
+                  <Button size="lg" fullWidth className="mb-3" disabled>
+                    Goal Reached
+                  </Button>
                 ) : (
                   <Button size="lg" fullWidth className="mb-3" onClick={() => setIsCheckoutOpen(true)}>Donate Now</Button>
                 )}

@@ -29,11 +29,23 @@ const CampaignCard = ({ campaign }) => {
         {/* 1. Large Media */}
         <Link to={`/campaigns/${campaign._id}`} className="block relative aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-gray-800">
           {coverMedia ? (
-            <img 
-              src={coverMedia} 
-              alt={campaign.title} 
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-            />
+            campaign.media[0].type === 'video' ? (
+              <video 
+                src={coverMedia} 
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                muted 
+                loop 
+                playsInline
+                autoPlay
+              />
+            ) : (
+              <img 
+                src={coverMedia} 
+                alt={campaign.title} 
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                style={{ objectPosition: campaign.media[0].objectPosition || '50% 50%' }}
+              />
+            )
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 transition-transform duration-500 group-hover:scale-105">
               <span className="text-gray-400 dark:text-gray-600 font-medium tracking-wide">No image yet</span>

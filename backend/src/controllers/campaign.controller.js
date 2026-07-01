@@ -48,7 +48,11 @@ export const createCampaign = catchAsync(async (req, res, next) => {
 
 export const getTrendingCampaigns = catchAsync(async (req, res, next) => {
   // Mock trending logic: sort by raisedAmount and limit
-  const campaigns = await Campaign.find({ status: 'active', deletedAt: null })
+  const campaigns = await Campaign.find({ 
+    status: 'active', 
+    deletedAt: null,
+    $expr: { $lt: [{ $ifNull: ["$raisedAmount", 0] }, "$goalAmount"] }
+  })
     .sort({ raisedAmount: -1 })
     .limit(10)
     .populate('creator', 'name avatar');
@@ -57,7 +61,11 @@ export const getTrendingCampaigns = catchAsync(async (req, res, next) => {
 });
 
 export const getNewestCampaigns = catchAsync(async (req, res, next) => {
-  const campaigns = await Campaign.find({ status: 'active', deletedAt: null })
+  const campaigns = await Campaign.find({ 
+    status: 'active', 
+    deletedAt: null,
+    $expr: { $lt: [{ $ifNull: ["$raisedAmount", 0] }, "$goalAmount"] }
+  })
     .sort({ createdAt: -1 })
     .limit(10)
     .populate('creator', 'name avatar');
@@ -67,7 +75,12 @@ export const getNewestCampaigns = catchAsync(async (req, res, next) => {
 
 export const getCampaignsByCategory = catchAsync(async (req, res, next) => {
   const { category } = req.params;
-  const campaigns = await Campaign.find({ category, status: 'active', deletedAt: null })
+  const campaigns = await Campaign.find({ 
+    category, 
+    status: 'active', 
+    deletedAt: null,
+    $expr: { $lt: [{ $ifNull: ["$raisedAmount", 0] }, "$goalAmount"] }
+  })
     .sort({ createdAt: -1 })
     .populate('creator', 'name avatar');
 
@@ -79,7 +92,11 @@ export const getFeed = catchAsync(async (req, res, next) => {
   const limit = parseInt(req.query.limit, 10) || 10;
   const skip = (page - 1) * limit;
 
-  const campaigns = await Campaign.find({ status: 'active', deletedAt: null })
+  const campaigns = await Campaign.find({ 
+    status: 'active', 
+    deletedAt: null,
+    $expr: { $lt: [{ $ifNull: ["$raisedAmount", 0] }, "$goalAmount"] }
+  })
     .sort({ createdAt: -1 })
     .skip(skip)
     .limit(limit)
