@@ -15,6 +15,8 @@ const CreateCampaign = () => {
   const navigate = useNavigate();
   const { user } = useSelector(state => state.auth);
   
+  const today = new Date().toISOString().split('T')[0];
+  
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     title: '',
@@ -109,6 +111,10 @@ const CreateCampaign = () => {
     if (step === 1) {
       if (!formData.title || !formData.category || !formData.goalAmount || !formData.endDate) {
         setError('Please fill in all basic information fields.');
+        return;
+      }
+      if (formData.endDate < today) {
+        setError('End date cannot be in the past.');
         return;
       }
     } else if (step === 2) {
@@ -225,7 +231,7 @@ const CreateCampaign = () => {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">End Date</label>
-                    <Input type="date" name="endDate" value={formData.endDate} onChange={handleChange} />
+                    <Input type="date" name="endDate" value={formData.endDate} onChange={handleChange} min={today} />
                   </div>
                 </div>
               </div>
