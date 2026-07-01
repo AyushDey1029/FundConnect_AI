@@ -76,6 +76,11 @@ const CheckoutModal = ({ isOpen, onClose, campaign, onSuccess }) => {
         theme: {
           color: '#2563EB',
         },
+        modal: {
+          ondismiss: function() {
+            setLoading(false);
+          }
+        },
         handler: async function (response) {
           try {
             setLoading(true);
