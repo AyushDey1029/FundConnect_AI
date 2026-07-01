@@ -3,6 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import { errorHandler, notFound } from './middlewares/error.middleware.js';
+import connectDB from './config/db.js';
 
 // Import Routes
 import authRoutes from './routes/auth.routes.js';
@@ -53,6 +54,15 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // API Routes
+app.use(async (req, res, next) => {
+    try {
+        await connectDB();
+        next();
+    } catch (error) {
+        next(error);
+    }
+});
+
 app.get('/', (req, res) => {
     res.json({ message: 'Welcome to FundConnect AI API' });
 });
