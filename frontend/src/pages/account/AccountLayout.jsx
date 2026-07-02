@@ -27,7 +27,7 @@ const AccountLayout = () => {
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-950 transition-colors duration-200 pt-16">
       <Navbar />
       
-      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+      <main className="flex-1 min-h-screen max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">My Account</h1>
         
         <div className="flex flex-col md:flex-row gap-8">

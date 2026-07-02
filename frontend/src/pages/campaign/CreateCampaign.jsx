@@ -180,7 +180,7 @@ const CreateCampaign = () => {
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-950 pt-16">
       <Navbar />
       
-      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex flex-col lg:flex-row gap-8">
+      <main className="flex-1 min-h-screen max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex flex-col lg:flex-row gap-8">
         
         {/* Left Column: Form Wizard */}
         <div className="flex-1 lg:max-w-2xl">
