@@ -52,14 +52,17 @@ As of the latest session, **Phase 1 (Foundation)**, **Phase 2 (API Completion)**
    - **Animations:** Fluid staggered entrances (`framer-motion`) and dynamic physics-based spring counters (`CountUp.jsx`).
    - **User Experience:** Comprehensive empty states across the application and fixed layout shifts on dynamic updates.
 
-## 3. What to do next: Phase 7 (Admin Moderation Dashboard)
-The application has been **successfully deployed** to Vercel. During the post-deployment phase, we addressed critical edge cases and polished the platform:
-- **Serverless Resilience:** Added robust MongoDB connection middlewares and JWT fallbacks.
-- **Security & Validation:** Fixed CORS for Vercel preview domains, enforced form validations on the frontend, and prevented past-date selections.
-- **Donation Logic & UI:** Restrained donations to the remaining goal amount, handled Razorpay cancellation states, disabled donations for fully-funded campaigns, and filtered funded campaigns from public feeds.
-- **Media Support:** Added dynamic video rendering for feed cards.
+## 3. Phase 6.5: Project Management & Team Handoff
+As the platform matures, we have transitioned into a team-based workflow:
+- **AI Automation:** Created `.agents/AGENTS.md` to automatically onboard teammates' AI assistants with the project context, stack, and strict git branching rules.
+- **Git Workflow:** Enforced strict branch protection on `main`. All new features (including those written by AI) must go through a feature branch (`feat/*`) and a Pull Request.
+- **Branding Polish:** Integrated custom Logo and updated browser tab favicons across the frontend.
 
-### Tasks Pending:
-- **Phase 7:** Admin Moderation Dashboard (User management, report handling, withdrawal approvals).
+## 4. What to do next: Managing the Team
+The Project Lead has transitioned from sole developer to managing the backlog via GitHub Issues. 
 
-*(Note to Agent: If you are reading this after a restart, refer to this document as the single source of truth for the project's current state and proceed directly to Phase 7).*
+### Tasks Pending (Assigned to Team):
+- **Phase 7 (Admin Moderation Dashboard):** User management, report handling, withdrawal approvals.
+- **Additional Polish Issues:** Saved campaigns, UI tweaks, Notification Bells, and Explore Causes functionalities.
+
+*(Note to Agent: If you are reading this after a restart, refer to this document as the single source of truth. Your primary role right now is assisting the Project Lead in managing Pull Requests, DevOps, and unblocking team members, unless explicitly asked to write code).*
