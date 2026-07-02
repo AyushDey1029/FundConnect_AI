@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import logoImg from '../../assets/Logo.png';
 
 const Footer = () => {
   return (
@@ -8,7 +9,7 @@ const Footer = () => {
         <div className="md:flex md:items-center md:justify-between">
           <div className="flex justify-center md:justify-start mb-6 md:mb-0">
             <div className="flex items-center space-x-2">
-              <img src="/src/assets/Logo.png" alt="FundConnect AI" className="h-12 w-auto object-contain rounded" />
+              <img src={logoImg} alt="FundConnect AI" className="h-12 w-auto object-contain rounded" />
               <span className="font-semibold text-gray-900 dark:text-white">FundConnect AI</span>
             </div>
           </div>
