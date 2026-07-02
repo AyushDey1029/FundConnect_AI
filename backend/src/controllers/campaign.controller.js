@@ -177,7 +177,7 @@ export const deleteCampaign = catchAsync(async (req, res, next) => {
   campaign.deletedAt = Date.now();
   await campaign.save();
 
-  res.status(204).json({ status: 'success', data: null });
+  res.status(200).json({ status: 'success', data: null });
 });
 
 export const getMyCampaigns = catchAsync(async (req, res, next) => {

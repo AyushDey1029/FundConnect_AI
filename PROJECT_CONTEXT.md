@@ -52,15 +52,14 @@ As of the latest session, **Phase 1 (Foundation)**, **Phase 2 (API Completion)**
    - **Animations:** Fluid staggered entrances (`framer-motion`) and dynamic physics-based spring counters (`CountUp.jsx`).
    - **User Experience:** Comprehensive empty states across the application and fixed layout shifts on dynamic updates.
 
-## 3. What to do next: Deployment
-We are currently awaiting user instructions for the **Deployment Phase**.
+## 3. What to do next: Phase 7 (Admin Moderation Dashboard)
+The application has been **successfully deployed** to Vercel. During the post-deployment phase, we addressed critical edge cases and polished the platform:
+- **Serverless Resilience:** Added robust MongoDB connection middlewares and JWT fallbacks.
+- **Security & Validation:** Fixed CORS for Vercel preview domains, enforced form validations on the frontend, and prevented past-date selections.
+- **Donation Logic & UI:** Restrained donations to the remaining goal amount, handled Razorpay cancellation states, disabled donations for fully-funded campaigns, and filtered funded campaigns from public feeds.
+- **Media Support:** Added dynamic video rendering for feed cards.
 
-### Deployment Tasks Pending:
-1. Configure frontend and backend codebase for production (CORS, API URLs).
-2. Set up cloud infrastructure based on user preference (e.g., Render, Vercel).
-3. Push to production and verify live integration with external APIs (Razorpay, Cloudinary, OpenRouter, MongoDB).
+### Tasks Pending:
+- **Phase 7:** Admin Moderation Dashboard (User management, report handling, withdrawal approvals).
 
-## 4. Future Phases Overview
-- **Phase 7:** Admin Moderation Dashboard (Pending post-deployment).
-
-*(Note to Agent: If you are reading this after a restart, refer to this document as the single source of truth for the project's current state and proceed directly to Deployment).*
+*(Note to Agent: If you are reading this after a restart, refer to this document as the single source of truth for the project's current state and proceed directly to Phase 7).*

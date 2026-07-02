@@ -5,7 +5,7 @@ import apiClient from '../../services/apiClient';
 import Button from '../../components/ui/Button';
 import Spinner from '../../components/ui/Spinner';
 import EmptyState from '../../components/ui/EmptyState';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const MyCampaigns = () => {
   const [campaigns, setCampaigns] = useState([]);
@@ -110,8 +110,17 @@ const MyCampaigns = () => {
               }}
               className="divide-y divide-gray-200 dark:divide-gray-800"
             >
-              {campaigns.map((campaign) => {
-                const coverImage = campaign.media?.find(m => m.type === 'image')?.url || 'https://via.placeholder.com/150';
+              {campaigns.map((campaign, index) => {
+                const imageMedia = campaign.media?.find(m => m.type === 'image');
+                const videoMedia = campaign.media?.find(m => m.type === 'video');
+                
+                let coverImage = 'https://via.placeholder.com/150';
+                if (imageMedia) {
+                  coverImage = imageMedia.url;
+                } else if (videoMedia) {
+                  coverImage = videoMedia.url.replace(/\.[^/.]+$/, ".jpg");
+                }
+
                 return (
                   <motion.tr 
                     key={campaign._id} 
@@ -185,32 +194,40 @@ const MyCampaigns = () => {
                       </button>
                       
                       {/* Dropdown Menu */}
-                      {openDropdownId === campaign._id && (
-                        <>
-                          <div className="fixed inset-0 z-10" onClick={() => setOpenDropdownId(null)}></div>
-                          <div className="absolute right-8 top-12 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 z-20 py-1 text-left">
-                            <Link to={`/campaigns/${campaign._id}`} className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700">
-                              <Eye className="w-4 h-4 mr-2 text-gray-400" /> View Campaign
-                            </Link>
-                            <Link to={`/campaigns/${campaign._id}/edit`} className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700">
-                              <Edit2 className="w-4 h-4 mr-2 text-gray-400" /> Edit Campaign
-                            </Link>
-                            <Link to={`/account/campaigns/${campaign._id}/updates`} className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700">
-                              <MessageSquare className="w-4 h-4 mr-2 text-gray-400" /> Post Update
-                            </Link>
-                            <Link to={`/account/campaigns/${campaign._id}/analytics`} className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700">
-                              <BarChart2 className="w-4 h-4 mr-2 text-gray-400" /> Analytics
-                            </Link>
-                            <div className="h-px bg-gray-100 dark:bg-gray-700 my-1"></div>
-                            <button 
-                              onClick={() => handleDelete(campaign._id)}
-                              className="flex w-full items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10"
+                      <AnimatePresence>
+                        {openDropdownId === campaign._id && (
+                          <>
+                            <div className="fixed inset-0 z-10" onClick={() => setOpenDropdownId(null)}></div>
+                            <motion.div 
+                              initial={{ opacity: 0, scale: 0.95, y: index >= campaigns.length - 2 ? 10 : -10 }}
+                              animate={{ opacity: 1, scale: 1, y: 0 }}
+                              exit={{ opacity: 0, scale: 0.95, y: index >= campaigns.length - 2 ? 10 : -10 }}
+                              transition={{ duration: 0.15, ease: "easeOut" }}
+                              className={`absolute right-8 ${index >= campaigns.length - 2 ? 'bottom-8' : 'top-12'} w-48 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 z-50 py-1 text-left`}
                             >
-                              <Trash2 className="w-4 h-4 mr-2 text-red-500" /> Delete
-                            </button>
-                          </div>
-                        </>
-                      )}
+                              <Link to={`/campaigns/${campaign._id}`} className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700">
+                                <Eye className="w-4 h-4 mr-2 text-gray-400" /> View Campaign
+                              </Link>
+                              <Link to={`/campaigns/${campaign._id}/edit`} className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700">
+                                <Edit2 className="w-4 h-4 mr-2 text-gray-400" /> Edit Campaign
+                              </Link>
+                              <Link to={`/account/campaigns/${campaign._id}/updates`} className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700">
+                                <MessageSquare className="w-4 h-4 mr-2 text-gray-400" /> Post Update
+                              </Link>
+                              <Link to={`/account/campaigns/${campaign._id}/analytics`} className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700">
+                                <BarChart2 className="w-4 h-4 mr-2 text-gray-400" /> Analytics
+                              </Link>
+                              <div className="h-px bg-gray-100 dark:bg-gray-700 my-1"></div>
+                              <button 
+                                onClick={() => handleDelete(campaign._id)}
+                                className="flex w-full items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10"
+                              >
+                                <Trash2 className="w-4 h-4 mr-2 text-red-500" /> Delete
+                              </button>
+                            </motion.div>
+                          </>
+                        )}
+                      </AnimatePresence>
                     </td>
                   </motion.tr>
                 );
