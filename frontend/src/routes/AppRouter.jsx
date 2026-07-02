@@ -11,14 +11,11 @@ import CampaignDetails from '../pages/CampaignDetails.jsx';
 import CreateCampaign from '../pages/campaign/CreateCampaign.jsx';
 import AccountLayout from '../pages/account/AccountLayout.jsx';
 
-import GlobalLoader from '../components/ui/GlobalLoader.jsx';
-
 const AppRouter = () => {
   const { isAuthenticated } = useSelector((state) => state.auth);
 
   return (
-    <GlobalLoader>
-      <Routes>
+    <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/campaigns/:id" element={<CampaignDetails />} />
       <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <Login />} />
@@ -32,7 +29,6 @@ const AppRouter = () => {
       
       <Route path="*" element={<div className="flex items-center justify-center h-screen text-2xl font-bold">404 Not Found</div>} />
     </Routes>
-    </GlobalLoader>
   );
 };
 

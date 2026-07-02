@@ -57,7 +57,7 @@ const Navbar = () => {
           {/* Left: Logo & Search */}
           <div className="flex items-center flex-1">
             <Link to="/" className="flex-shrink-0 flex items-center space-x-2">
-              <img src="/src/assets/Logo.png" alt="FundConnect AI" className="h-8 w-auto object-contain rounded" />
+              <img src="/src/assets/Logo.png" alt="FundConnect AI" className="h-10 sm:h-12 w-auto object-contain rounded" />
               <span className="font-bold text-xl tracking-tight hidden sm:block text-gray-900 dark:text-white">
                 FundConnect
               </span>
