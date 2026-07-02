@@ -8,6 +8,7 @@ import {
 import { logout } from '../../store/authSlice';
 import Button from '../ui/Button';
 import Avatar from '../ui/Avatar';
+import logoImg from '../../assets/Logo.png';
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -57,7 +58,7 @@ const Navbar = () => {
           {/* Left: Logo & Search */}
           <div className="flex items-center flex-1">
             <Link to="/" className="flex-shrink-0 flex items-center gap-3 ml-2">
-              <img src="/src/assets/Logo.png" alt="FundConnect AI" className="h-12 sm:h-16 w-auto object-contain rounded" />
+              <img src={logoImg} alt="FundConnect AI" className="h-12 sm:h-16 w-auto object-contain rounded" />
               <span className="font-bold text-xl sm:text-2xl tracking-tight hidden sm:block text-gray-900 dark:text-white mt-1">
                 FundConnect
               </span>
