@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import loadingVideo from '../../assets/Loading page.mp4';
 
 const GlobalLoader = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -24,7 +23,7 @@ const GlobalLoader = ({ children }) => {
             className="fixed inset-0 z-50 flex items-center justify-center bg-black"
           >
             <video
-              src={loadingVideo}
+              src="/loading-page.mp4"
               autoPlay
               loop
               muted
