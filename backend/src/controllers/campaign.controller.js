@@ -174,8 +174,7 @@ export const deleteCampaign = catchAsync(async (req, res, next) => {
     return next(new AppError('You do not have permission to delete this campaign', 403));
   }
 
-  campaign.deletedAt = Date.now();
-  await campaign.save();
+  await Campaign.findByIdAndUpdate(req.params.id, { deletedAt: Date.now() });
 
   res.status(200).json({ status: 'success', data: null });
 });
