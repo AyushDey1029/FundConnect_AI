@@ -8,9 +8,7 @@ const Footer = () => {
         <div className="md:flex md:items-center md:justify-between">
           <div className="flex justify-center md:justify-start mb-6 md:mb-0">
             <div className="flex items-center space-x-2">
-              <div className="w-6 h-6 bg-blue-600 rounded flex items-center justify-center">
-                <span className="text-white font-bold text-xs">F</span>
-              </div>
+              <img src="/src/assets/Logo.png" alt="FundConnect AI" className="h-6 w-auto object-contain rounded" />
               <span className="font-semibold text-gray-900 dark:text-white">FundConnect AI</span>
             </div>
           </div>
