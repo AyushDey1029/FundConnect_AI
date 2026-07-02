@@ -61,8 +61,13 @@ As the platform matures, we have transitioned into a team-based workflow:
 ## 4. What to do next: Managing the Team
 The Project Lead has transitioned from sole developer to managing the backlog via GitHub Issues. 
 
+### Recent Updates (Phase 6.5 & UI Polish):
+- **Bug Fixes:** Implemented `ScrollToTop` router restoration to fix page scroll positions on navigation.
+- **Issue Delegation:** The "Saved Campaigns" feature has been officially ticketed and assigned to a team member on GitHub.
+- **UI Optimization Backlog:** Created structured GitHub issues for Interactive Notification Bells (hooking into existing backend donation events), Explore Causes filtering, Comprehensive Empty States, Skeleton Loaders, and Button Micro-animations.
+
 ### Tasks Pending (Assigned to Team):
 - **Phase 7 (Admin Moderation Dashboard):** User management, report handling, withdrawal approvals.
-- **Additional Polish Issues:** Saved campaigns, UI tweaks, Notification Bells, and Explore Causes functionalities.
+- **Execute UI Polish Backlog:** Implement the detailed UI optimization tickets assigned on GitHub.
 
-*(Note to Agent: If you are reading this after a restart, refer to this document as the single source of truth. Your primary role right now is assisting the Project Lead in managing Pull Requests, DevOps, and unblocking team members, unless explicitly asked to write code).*
+*(Note to Agent: If you are reading this after a restart, refer to this document as the single source of truth. Your primary role right now is assisting the Project Lead in managing Pull Requests, DevOps, updating documentation, and unblocking team members, unless explicitly asked to write code).*
