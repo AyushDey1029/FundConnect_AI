@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { store } from './store/store.js';
 import AppRouter from './routes/AppRouter.jsx';
+import ScrollToTop from './components/common/ScrollToTop.jsx';
 import './index.css';
 import { Toaster } from 'react-hot-toast';
 
@@ -11,6 +12,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Provider store={store}>
       <BrowserRouter>
+        <ScrollToTop />
         <AppRouter />
         <Toaster position="bottom-right" toastOptions={{
           style: {
