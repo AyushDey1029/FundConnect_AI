@@ -77,7 +77,7 @@ const importData = async () => {
 
     // 2. Create Campaigns
     const categories = ['Medical', 'Education', 'Startup', 'Environment', 'Animal Welfare', 'NGO', 'Disaster Relief', 'Other'];
-    const statuses = ['pending', 'approved', 'rejected', 'suspended'];
+    const statuses = ['draft', 'active', 'completed', 'cancelled'];
     const campaignsToCreate = [];
 
     for (let i = 0; i < 30; i++) {
@@ -99,7 +99,7 @@ const importData = async () => {
           objectPosition: '50% 50%'
         }],
         status: faker.helpers.arrayElement(statuses),
-        isVerified: faker.datatype.boolean({ probability: 0.5 }),
+        verificationStatus: faker.helpers.arrayElement(['pending', 'verified', 'rejected']),
         trustScore: {
           score: faker.number.int({ min: 10, max: 100 }),
           explanation: faker.lorem.sentence(),
