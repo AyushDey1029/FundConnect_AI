@@ -1,17 +1,67 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { MapPin, Heart, Share2 } from 'lucide-react';
 import { Card } from '../ui/Card';
 import Button from '../ui/Button';
 import Progress from '../ui/Progress';
 import Avatar from '../ui/Avatar';
 import Badge from '../ui/Badge';
+import { updateUser } from '../../store/authSlice';
+import toast from 'react-hot-toast';
+import apiClient from '../../services/apiClient';
 
 const CampaignCard = ({ campaign }) => {
+  const dispatch = useDispatch();
   const { user, isAuthenticated } = useSelector((state) => state.auth);
+  const [saving, setSaving] = useState(false);
+
   if (!campaign) return null;
+
+  const isSaved = isAuthenticated && user?.savedCampaigns?.includes(campaign._id);
+
+  const handleSaveToggle = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!isAuthenticated) {
+      toast.error('Please log in to save campaigns');
+      return;
+    }
+
+    try {
+      setSaving(true);
+      const response = await apiClient.post(`/users/saved-campaigns/${campaign._id}`);
+      
+      dispatch(updateUser({
+        ...user,
+        savedCampaigns: response.data.data.savedCampaigns
+      }));
+      
+      toast.success(response.data.message, {
+        icon: isSaved ? '💔' : '💖',
+      });
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to update save status');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleShare = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (navigator.share) {
+      navigator.share({
+        title: campaign.title,
+        url: `${window.location.origin}/campaigns/${campaign._id}`,
+      });
+    } else {
+      navigator.clipboard.writeText(`${window.location.origin}/campaigns/${campaign._id}`);
+      toast.success('Link copied to clipboard!');
+    }
+  };
 
   const hasMedia = campaign.media && campaign.media.length > 0;
   const coverMedia = hasMedia ? campaign.media[0].url : null;
@@ -124,17 +174,36 @@ const CampaignCard = ({ campaign }) => {
               </div>
             </div>
 
-            <div className="flex items-center space-x-2">
-              <Button variant="ghost" size="icon" className="text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20">
+            <div className="flex items-center space-x-1 sm:space-x-2">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className={`transition-all duration-200 ${
+                  isSaved 
+                    ? 'text-rose-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30' 
+                    : 'text-gray-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/20'
+                }`}
+                onClick={handleSaveToggle}
+                disabled={saving}
+                title={isSaved ? "Remove from Saved" : "Save Campaign"}
+              >
+                <Heart className={`w-4 h-4 transition-transform duration-200 active:scale-125 ${isSaved ? 'fill-rose-500 text-rose-500' : ''}`} />
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/20 transition-colors duration-200"
+                onClick={handleShare}
+              >
                 <Share2 className="w-4 h-4" />
               </Button>
               {isCreator ? (
-                <Button size="sm" className="px-5 font-semibold shadow-sm" disabled>
+                <Button size="sm" className="px-4 sm:px-5 font-semibold shadow-sm" disabled>
                   Your Campaign
                 </Button>
               ) : (
                 <Link to={`/campaigns/${campaign._id}`}>
-                  <Button size="sm" className="px-5 font-semibold shadow-sm shadow-blue-500/10">Support</Button>
+                  <Button size="sm" className="px-4 sm:px-5 font-semibold shadow-sm shadow-blue-500/10">Support</Button>
                 </Link>
               )}
             </div>

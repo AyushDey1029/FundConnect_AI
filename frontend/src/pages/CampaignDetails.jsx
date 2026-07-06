@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { Share2, Tag, CheckCircle, X } from 'lucide-react';
+import { useSelector, useDispatch } from 'react-redux';
+import { Share2, Tag, CheckCircle, X, Heart } from 'lucide-react';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import PageWrapper from '../components/layout/PageWrapper';
@@ -15,14 +15,44 @@ import CampaignComments from '../components/campaign/CampaignComments';
 import CheckoutModal from '../components/campaign/CheckoutModal';
 import apiClient from '../services/apiClient';
 import toast from 'react-hot-toast';
+import { updateUser } from '../store/authSlice';
 
 const CampaignDetails = () => {
   const { id } = useParams();
+  const dispatch = useDispatch();
   const [campaign, setCampaign] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [saving, setSaving] = useState(false);
   const { user, isAuthenticated } = useSelector((state) => state.auth);
+
+  const isSaved = isAuthenticated && user?.savedCampaigns?.includes(campaign?._id);
+
+  const handleSaveToggle = async () => {
+    if (!isAuthenticated) {
+      toast.error('Please log in to save campaigns');
+      return;
+    }
+
+    try {
+      setSaving(true);
+      const response = await apiClient.post(`/users/saved-campaigns/${campaign._id}`);
+      
+      dispatch(updateUser({
+        ...user,
+        savedCampaigns: response.data.data.savedCampaigns
+      }));
+      
+      toast.success(response.data.message, {
+        icon: isSaved ? '💔' : '💖',
+      });
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to update save status');
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const isCreator = isAuthenticated && campaign && user?._id === (campaign.creator?._id || campaign.creator);
   const percentage = campaign ? Math.min(100, Math.max(0, ((campaign.raisedAmount || 0) / campaign.goalAmount) * 100)) : 0;
@@ -185,10 +215,27 @@ const CampaignDetails = () => {
                   <Button size="lg" fullWidth className="mb-3" onClick={() => setIsCheckoutOpen(true)}>Donate Now</Button>
                 )}
                 
-                <Button size="lg" variant="outline" fullWidth onClick={handleShare}>
-                  <Share2 className="w-4 h-4 mr-2" />
-                  Share Campaign
-                </Button>
+                <div className="flex gap-3">
+                  <Button size="lg" variant="outline" className="flex-1" onClick={handleShare}>
+                    <Share2 className="w-4 h-4 mr-2" />
+                    Share
+                  </Button>
+                  <Button 
+                    size="lg" 
+                    variant="outline" 
+                    className={`flex-1 transition-all duration-200 ${
+                      isSaved 
+                        ? 'text-rose-500 border-rose-200 hover:border-rose-300 hover:bg-rose-50 dark:border-rose-900/30 dark:hover:bg-rose-950/20' 
+                        : 'text-gray-600 dark:text-gray-300 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/20'
+                    }`}
+                    onClick={handleSaveToggle}
+                    disabled={saving}
+                    title={isSaved ? "Remove from Saved" : "Save Campaign"}
+                  >
+                    <Heart className={`w-4 h-4 mr-2 ${isSaved ? 'fill-rose-500 text-rose-500' : ''}`} />
+                    {isSaved ? 'Saved' : 'Save'}
+                  </Button>
+                </div>
               </div>
 
               {/* AI Trust Summary */}
