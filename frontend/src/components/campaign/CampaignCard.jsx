@@ -185,6 +185,7 @@ const CampaignCard = ({ campaign }) => {
                 }`}
                 onClick={handleSaveToggle}
                 disabled={saving}
+                title={isSaved ? "Remove from Saved" : "Save Campaign"}
               >
                 <Heart className={`w-4 h-4 transition-transform duration-200 active:scale-125 ${isSaved ? 'fill-rose-500 text-rose-500' : ''}`} />
               </Button>
