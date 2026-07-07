@@ -8,7 +8,7 @@ import PageWrapper from '../components/layout/PageWrapper';
 import Button from '../components/ui/Button';
 import Progress from '../components/ui/Progress';
 import Avatar from '../components/ui/Avatar';
-import CampaignSkeleton from '../components/ui/CampaignSkeleton';
+import CampaignDetailsSkeleton from '../components/ui/CampaignDetailsSkeleton';
 import CountUp from '../components/ui/CountUp';
 import CampaignUpdates from '../components/campaign/CampaignUpdates';
 import CampaignComments from '../components/campaign/CampaignComments';
@@ -90,9 +90,7 @@ const CampaignDetails = () => {
       <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-950 transition-colors duration-200 pt-16">
         <Navbar />
         <main className="flex-1 min-h-screen max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
-          <div className="lg:col-span-2">
-            <CampaignSkeleton />
-          </div>
+          <CampaignDetailsSkeleton />
         </main>
         <Footer />
       </div>
