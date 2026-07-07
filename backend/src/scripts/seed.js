@@ -60,7 +60,7 @@ const importData = async () => {
       isVerified: true,
     });
 
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 100; i++) {
       usersToCreate.push({
         name: faker.person.fullName(),
         email: faker.internet.email(),
@@ -77,10 +77,11 @@ const importData = async () => {
 
     // 2. Create Campaigns
     const categories = ['Medical', 'Education', 'Startup', 'Environment', 'Animal Welfare', 'NGO', 'Disaster Relief', 'Other'];
-    const statuses = ['pending', 'approved', 'rejected', 'suspended'];
+    const statuses = ['draft', 'active', 'completed', 'cancelled'];
+    const verificationStatuses = ['pending', 'verified', 'rejected'];
     const campaignsToCreate = [];
 
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 500; i++) {
       const creator = faker.helpers.arrayElement(createdUsers)._id;
       const goalAmount = faker.number.int({ min: 1000, max: 100000 });
       const raisedAmount = faker.number.int({ min: 0, max: goalAmount });
@@ -99,7 +100,7 @@ const importData = async () => {
           objectPosition: '50% 50%'
         }],
         status: faker.helpers.arrayElement(statuses),
-        isVerified: faker.datatype.boolean({ probability: 0.5 }),
+        verificationStatus: faker.helpers.arrayElement(verificationStatuses),
         trustScore: {
           score: faker.number.int({ min: 10, max: 100 }),
           explanation: faker.lorem.sentence(),
@@ -156,7 +157,7 @@ const importData = async () => {
     const reportsToCreate = [];
     const withdrawalsToCreate = [];
 
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < 250; i++) {
       const campaign = faker.helpers.arrayElement(createdCampaigns);
       updatesToCreate.push({
         campaign: campaign._id,
@@ -167,7 +168,7 @@ const importData = async () => {
       });
     }
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 50; i++) {
       reportsToCreate.push({
         user: faker.helpers.arrayElement(createdUsers)._id,
         reason: faker.lorem.words(3),
@@ -178,7 +179,7 @@ const importData = async () => {
       });
     }
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 100; i++) {
       const campaign = faker.helpers.arrayElement(createdCampaigns);
       withdrawalsToCreate.push({
         campaign: campaign._id,
