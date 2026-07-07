@@ -62,6 +62,7 @@ As the platform matures, we have transitioned into a team-based workflow:
 The Project Lead has transitioned from sole developer to managing the backlog via GitHub Issues. 
 
 ### Recent Updates (Phase 6.5 & UI Polish):
+- **Authentication:** Implemented a secure Forgot Password and Reset Password flow (development mode).
 - **Bug Fixes:** Implemented `ScrollToTop` router restoration to fix page scroll positions on navigation.
 - **Issue Delegation:** The "Saved Campaigns" feature has been officially ticketed and assigned to a team member on GitHub.
 - **UI Optimization Backlog:** Created structured GitHub issues for Interactive Notification Bells (hooking into existing backend donation events), Explore Causes filtering, Comprehensive Empty States, Skeleton Loaders, and Button Micro-animations.

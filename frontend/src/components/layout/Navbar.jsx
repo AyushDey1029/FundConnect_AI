@@ -3,7 +3,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { 
   Search, Bell, PlusCircle, User, LogOut, 
-  Settings, Heart, Grid, Moon, Sun, Menu, X, Shield, MessageSquare, DollarSign
+  Settings, Heart, Grid, Moon, Sun, Shield, MessageSquare, DollarSign
 } from 'lucide-react';
 import { logout } from '../../store/authSlice';
 import { notificationService } from '../../services/notification.service';
@@ -34,7 +34,7 @@ const Navbar = () => {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
   
   const [isScrolled, setIsScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [notificationDropdownOpen, setNotificationDropdownOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -323,45 +323,9 @@ const Navbar = () => {
               </div>
             )}
 
-            {/* Mobile menu button */}
-            <div className="flex items-center sm:hidden ml-2">
-              <button 
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none"
-              >
-                {mobileMenuOpen ? <X className="block h-6 w-6" /> : <Menu className="block h-6 w-6" />}
-              </button>
-            </div>
           </div>
         </div>
       </div>
-
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div className="sm:hidden border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
-          <div className="pt-2 pb-3 space-y-1">
-            <Link to="/" className="block pl-3 pr-4 py-2 border-l-4 border-blue-500 text-base font-medium text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-gray-800">
-              Feed
-            </Link>
-            <Link to="/categories" className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:border-gray-300">
-              Categories
-            </Link>
-          </div>
-          
-          {!isAuthenticated && (
-            <div className="pt-4 pb-3 border-t border-gray-200 dark:border-gray-800">
-              <div className="flex items-center px-4 space-x-3">
-                <Link to="/login" className="flex-1">
-                  <Button variant="outline" fullWidth>Log in</Button>
-                </Link>
-                <Link to="/register" className="flex-1">
-                  <Button fullWidth>Sign up</Button>
-                </Link>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
     </nav>
   );
 };
