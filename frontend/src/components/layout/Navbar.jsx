@@ -3,7 +3,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { 
   Search, Bell, PlusCircle, User, LogOut, 
-  Settings, Heart, Grid, Moon, Sun, Menu, X
+  Settings, Heart, Grid, Moon, Sun, Menu, X, Shield
 } from 'lucide-react';
 import { logout } from '../../store/authSlice';
 import Button from '../ui/Button';
@@ -139,6 +139,12 @@ const Navbar = () => {
                           <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{user?.email}</p>
                         </div>
                         <div className="py-1">
+                          {user?.role === 'admin' && (
+                            <Link to="/admin" className="group flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700">
+                              <Shield className="mr-3 h-4 w-4 text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300" />
+                              Admin Dashboard
+                            </Link>
+                          )}
                           <Link to="/account" className="group flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700">
                             <User className="mr-3 h-4 w-4 text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300" />
                             Dashboard
