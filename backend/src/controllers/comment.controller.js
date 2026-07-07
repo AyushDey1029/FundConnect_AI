@@ -1,5 +1,6 @@
 import Comment from '../models/comment.model.js';
 import Campaign from '../models/campaign.model.js';
+import Notification from '../models/notification.model.js';
 import { catchAsync } from '../utils/catchAsync.js';
 import AppError from '../utils/AppError.js';
 
@@ -23,6 +24,17 @@ export const addComment = catchAsync(async (req, res, next) => {
     text,
     parentCommentId: parentCommentId || null
   });
+
+  if (campaign.creator.toString() !== req.user._id.toString()) {
+    await Notification.create({
+      recipient: campaign.creator,
+      sender: req.user._id,
+      campaign: campaign._id,
+      title: 'New Comment',
+      message: `${req.user.name} commented on your campaign "${campaign.title}"`,
+      type: 'comment'
+    });
+  }
 
   res.status(201).json({ status: 'success', data: { comment } });
 });

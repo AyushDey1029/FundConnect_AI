@@ -89,13 +89,17 @@ export const verifyDonation = catchAsync(async (req, res, next) => {
   );
 
   // Create notification for campaign creator
-  await Notification.create({
-    user: campaign.creator,
-    message: `${req.user.name} donated ₹${donation.amount} to your campaign "${campaign.title}"`,
-    type: 'donation',
-    relatedItem: donation._id,
-    onModel: 'Donation'
-  });
+  if (campaign.creator.toString() !== req.user._id.toString()) {
+    await Notification.create({
+      recipient: campaign.creator,
+      sender: req.user._id,
+      campaign: campaign._id,
+      title: 'New Donation',
+      message: `${req.user.name} donated ₹${donation.amount} to your campaign "${campaign.title}"`,
+      type: 'donation',
+      amount: donation.amount
+    });
+  }
 
   res.status(200).json({
     status: 'success',
