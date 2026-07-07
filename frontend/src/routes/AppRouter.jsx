@@ -8,6 +8,8 @@ import AdminRoute from './AdminRoute.jsx';
 import Home from '../pages/Home.jsx';
 import Login from '../pages/Login.jsx';
 import Register from '../pages/Register.jsx';
+import ForgotPassword from '../pages/ForgotPassword.jsx';
+import ResetPassword from '../pages/ResetPassword.jsx';
 import CampaignDetails from '../pages/CampaignDetails.jsx';
 import CreateCampaign from '../pages/campaign/CreateCampaign.jsx';
 import AccountLayout from '../pages/account/AccountLayout.jsx';
@@ -28,6 +30,8 @@ const AppRouter = () => {
       <Route path="/campaigns/:id" element={<CampaignDetails />} />
       <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <Login />} />
       <Route path="/register" element={isAuthenticated ? <Navigate to="/" /> : <Register />} />
+      <Route path="/forgot-password" element={isAuthenticated ? <Navigate to="/" /> : <ForgotPassword />} />
+      <Route path="/reset-password/:token" element={isAuthenticated ? <Navigate to="/" /> : <ResetPassword />} />
       
       {/* Protected Routes */}
       <Route element={<ProtectedRoute />}>
