@@ -72,9 +72,9 @@ const CampaignCard = ({ campaign }) => {
     <motion.div
       whileHover={{ y: -4 }}
       transition={{ duration: 0.2, ease: "easeOut" }}
-      className="w-full max-w-xl mx-auto mb-8"
+      className="w-full max-w-xl mx-auto mb-8 px-4 sm:px-0"
     >
-      <Card className="h-full shadow-sm hover:shadow-lg transition-all duration-300 group overflow-hidden border-gray-100 dark:border-gray-800">
+      <Card className="h-full shadow-md hover:shadow-xl transition-all duration-300 group overflow-hidden border-gray-100 dark:border-gray-800 rounded-2xl">
         
         {/* 1. Large Media */}
         <Link to={`/campaigns/${campaign._id}`} className="block relative aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-gray-800">

@@ -347,6 +347,24 @@ const CampaignDetails = () => {
       />
 
       <Footer />
+
+      {/* Mobile Sticky CTA */}
+      {!isCreator && (
+        <div className="sm:hidden fixed bottom-[64px] inset-x-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-t border-gray-200 dark:border-gray-800 p-4 z-40 flex items-center shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+          <Button 
+            className="w-full text-base py-3 font-semibold shadow-md active:scale-[0.98] transition-transform" 
+            onClick={() => {
+              if (isAuthenticated) {
+                setIsCheckoutOpen(true);
+              } else {
+                toast.error('Please log in to donate');
+              }
+            }}
+          >
+            Donate Now
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
