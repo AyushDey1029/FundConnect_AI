@@ -1,6 +1,8 @@
 import React from 'react';
 import { Loader2 } from 'lucide-react';
 
+import { motion } from 'framer-motion';
+
 const Button = ({
   children,
   variant = 'primary',
@@ -13,14 +15,14 @@ const Button = ({
   onClick,
   ...props
 }) => {
-  const baseStyles = 'group inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98]';
+  const baseStyles = 'group inline-flex items-center justify-center font-medium rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none relative overflow-hidden';
   
   const variants = {
-    primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 shadow-sm hover:shadow-md',
-    secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200 focus:ring-gray-500 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700',
-    outline: 'border border-gray-200 text-gray-700 hover:border-gray-300 hover:bg-gray-50 focus:ring-gray-500 dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-600 dark:hover:bg-gray-800 shadow-sm',
-    ghost: 'text-gray-700 hover:bg-gray-100 focus:ring-gray-500 dark:text-gray-300 dark:hover:bg-gray-800',
-    danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 shadow-sm hover:shadow-md',
+    primary: 'bg-gradient-to-r from-blue-600 to-blue-500 text-white hover:from-blue-500 hover:to-blue-400 hover:shadow-[0_0_20px_rgba(59,130,246,0.4)] focus:ring-blue-500 border border-blue-500/50',
+    secondary: 'bg-gradient-to-r from-gray-100 to-white text-gray-900 hover:shadow-[0_0_15px_rgba(209,213,219,0.5)] focus:ring-gray-500 dark:from-gray-800 dark:to-gray-900 dark:text-gray-100 dark:hover:shadow-[0_0_15px_rgba(75,85,99,0.4)] border border-gray-200 dark:border-gray-700',
+    outline: 'border border-gray-200 text-gray-700 hover:border-gray-300 hover:bg-gray-50/50 focus:ring-gray-500 dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-600 dark:hover:bg-gray-800/50 hover:shadow-[0_0_15px_rgba(156,163,175,0.2)]',
+    ghost: 'text-gray-700 hover:bg-gray-100/50 focus:ring-gray-500 dark:text-gray-300 dark:hover:bg-gray-800/50 hover:shadow-[0_0_15px_rgba(156,163,175,0.1)]',
+    danger: 'bg-gradient-to-r from-red-600 to-red-500 text-white hover:from-red-500 hover:to-red-400 hover:shadow-[0_0_20px_rgba(239,68,68,0.4)] focus:ring-red-500 border border-red-500/50',
   };
 
   const sizes = {
@@ -31,7 +33,9 @@ const Button = ({
   };
 
   return (
-    <button
+    <motion.button
+      whileHover={disabled || isLoading ? {} : { scale: 1.02 }}
+      whileTap={disabled || isLoading ? {} : { scale: 0.95 }}
       type={type}
       disabled={disabled || isLoading}
       onClick={onClick}
@@ -44,9 +48,16 @@ const Button = ({
       `}
       {...props}
     >
-      {isLoading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-      {children}
-    </button>
+      {/* Subtle shine effect on hover for primary/danger */}
+      {(variant === 'primary' || variant === 'danger') && (
+        <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:animate-[shimmer_1.5s_infinite]" />
+      )}
+      
+      <span className="relative flex items-center justify-center gap-2">
+        {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
+        {children}
+      </span>
+    </motion.button>
   );
 };
 
