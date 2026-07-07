@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
@@ -32,6 +32,7 @@ const Home = () => {
 
   const [feedType, setFeedType] = useState('feed'); // 'feed', 'trending', 'newest', 'category'
   const [activeCategory, setActiveCategory] = useState('');
+  const categoriesRef = useRef(null);
 
   // Sync state if URL search query changes
   useEffect(() => {
@@ -40,6 +41,22 @@ const Home = () => {
       setActiveCategory('');
     }
   }, [search]);
+
+  // Horizontal scroll for categories
+  useEffect(() => {
+    const el = categoriesRef.current;
+    if (!el) return;
+
+    const handleWheel = (e) => {
+      if (e.deltaY !== 0) {
+        e.preventDefault();
+        el.scrollLeft += e.deltaY;
+      }
+    };
+
+    el.addEventListener('wheel', handleWheel, { passive: false });
+    return () => el.removeEventListener('wheel', handleWheel);
+  }, []);
 
   // Determine endpoint and params for useCampaigns hook
   let endpoint = '/campaigns/feed';
@@ -149,7 +166,7 @@ const Home = () => {
           </div>
 
           {/* Category Badges */}
-          <div className="flex space-x-2 overflow-x-auto pb-2 scrollbar-hide">
+          <div ref={categoriesRef} className="flex space-x-2 overflow-x-auto pb-2 scrollbar-hide">
             {CATEGORIES_WITH_EMOJIS.map((cat) => (
               <button
                 key={cat.name}
