@@ -101,13 +101,7 @@ const CampaignCard = ({ campaign }) => {
               <span className="text-gray-400 dark:text-gray-600 font-medium tracking-wide">No image yet</span>
             </div>
           )}
-          {campaign.trustScore && (
-            <div className="absolute top-4 left-4">
-              <Badge variant="green" className="shadow-sm backdrop-blur-md bg-white/90 dark:bg-gray-900/90 border border-green-100 dark:border-green-900">
-                Trust Score: {campaign.trustScore.score}
-              </Badge>
-            </div>
-          )}
+          {/* Trust Score hidden for MVP */}
         </Link>
 
         <div className="p-6">
