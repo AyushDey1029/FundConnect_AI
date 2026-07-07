@@ -36,11 +36,11 @@ export const verifyCampaign = catchAsync(async (req, res, next) => {
   
   if (campaign) {
     await Notification.create({
-      user: campaign.creator._id,
+      recipient: campaign.creator._id,
+      title: 'Campaign Approved',
       message: `Your campaign "${campaign.title}" has been approved!`,
       type: 'campaign_approval',
-      relatedItem: campaign._id,
-      onModel: 'Campaign'
+      campaign: campaign._id
     });
   }
 
@@ -71,11 +71,12 @@ export const approveWithdrawal = catchAsync(async (req, res, next) => {
 
   if (withdrawal) {
     await Notification.create({
-      user: withdrawal.user._id,
+      recipient: withdrawal.user._id,
+      title: 'Withdrawal Approved',
       message: `Your withdrawal request for ₹${withdrawal.amount} has been approved.`,
       type: 'withdrawal_approval',
-      relatedItem: withdrawal._id,
-      onModel: 'Withdrawal'
+      amount: withdrawal.amount,
+      campaign: withdrawal.campaign._id
     });
   }
 
@@ -96,11 +97,11 @@ export const rejectCampaign = catchAsync(async (req, res, next) => {
   
   if (campaign) {
     await Notification.create({
-      user: campaign.creator._id,
+      recipient: campaign.creator._id,
+      title: 'Campaign Rejected',
       message: `Your campaign "${campaign.title}" has been rejected.`,
       type: 'system',
-      relatedItem: campaign._id,
-      onModel: 'Campaign'
+      campaign: campaign._id
     });
   }
 

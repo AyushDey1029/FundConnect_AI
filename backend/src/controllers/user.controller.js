@@ -1,6 +1,7 @@
 import User from '../models/User.model.js';
 import Campaign from '../models/campaign.model.js';
 import Donation from '../models/donation.model.js';
+import Notification from '../models/notification.model.js';
 import { catchAsync } from '../utils/catchAsync.js';
 import AppError from '../utils/AppError.js';
 import { uploadToCloudinary } from '../services/cloudinary.service.js';
@@ -39,6 +40,18 @@ export const toggleSaveCampaign = catchAsync(async (req, res, next) => {
     user.savedCampaigns.pull(campaignId);
   } else {
     user.savedCampaigns.push(campaignId);
+
+    const campaign = await Campaign.findById(campaignId);
+    if (campaign && campaign.creator.toString() !== req.user._id.toString()) {
+      await Notification.create({
+        recipient: campaign.creator,
+        sender: req.user._id,
+        campaign: campaign._id,
+        title: 'Campaign Saved',
+        message: `${req.user.name} saved your campaign "${campaign.title}"`,
+        type: 'save_campaign'
+      });
+    }
   }
 
   await user.save({ validateBeforeSave: false });

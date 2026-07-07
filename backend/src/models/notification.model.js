@@ -2,9 +2,21 @@ import mongoose from 'mongoose';
 
 const notificationSchema = new mongoose.Schema(
   {
-    user: {
+    recipient: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
+      required: true,
+    },
+    sender: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
+    campaign: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Campaign',
+    },
+    title: {
+      type: String,
       required: true,
     },
     message: {
@@ -19,22 +31,17 @@ const notificationSchema = new mongoose.Schema(
         'system',
         'campaign_approval',
         'campaign_update',
-        'withdrawal_approval'
+        'withdrawal_approval',
+        'save_campaign'
       ],
       required: true,
+    },
+    amount: {
+      type: Number,
     },
     isRead: {
       type: Boolean,
       default: false,
-    },
-    relatedItem: {
-      // Could be Campaign ID, Comment ID, etc., depending on the type
-      type: mongoose.Schema.Types.ObjectId,
-      refPath: 'onModel',
-    },
-    onModel: {
-      type: String,
-      enum: ['Campaign', 'Comment', 'Donation', 'Withdrawal'],
     }
   },
   {
