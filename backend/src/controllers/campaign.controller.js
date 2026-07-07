@@ -1,5 +1,7 @@
 import Campaign from '../models/campaign.model.js';
 import CampaignUpdate from '../models/campaignUpdate.model.js';
+import User from '../models/User.model.js';
+import Comment from '../models/comment.model.js';
 import { catchAsync } from '../utils/catchAsync.js';
 import AppError from '../utils/AppError.js';
 import { uploadToCloudinary, deleteFromCloudinary } from '../services/cloudinary.service.js';
@@ -253,4 +255,30 @@ export const getCampaignUpdates = catchAsync(async (req, res, next) => {
     .populate('creator', 'name avatar');
 
   res.status(200).json({ status: 'success', results: updates.length, data: { updates } });
+});
+
+export const getCampaignAnalytics = catchAsync(async (req, res, next) => {
+  const campaign = await Campaign.findById(req.params.id);
+  
+  if (!campaign) {
+    return next(new AppError('No campaign found with that ID', 404));
+  }
+
+  // Only creator can view their analytics
+  if (campaign.creator.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+    return next(new AppError('You do not have permission to view this campaign analytics', 403));
+  }
+
+  const commentsCount = await Comment.countDocuments({ campaign: campaign._id });
+  const savesCount = await User.countDocuments({ savedCampaigns: campaign._id });
+
+  const analytics = {
+    goalAmount: campaign.goalAmount,
+    raisedAmount: campaign.raisedAmount,
+    donorsCount: campaign.donorsCount,
+    commentsCount,
+    savesCount,
+  };
+
+  res.status(200).json({ status: 'success', data: { analytics } });
 });

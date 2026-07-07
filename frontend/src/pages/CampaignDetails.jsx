@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { Share2, Tag, CheckCircle, X, Heart } from 'lucide-react';
+import { Share2, Tag, CheckCircle, X, Heart, Activity, Users, MessageCircle, Bookmark, Target, TrendingUp } from 'lucide-react';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import PageWrapper from '../components/layout/PageWrapper';
@@ -25,6 +25,8 @@ const CampaignDetails = () => {
   const [error, setError] = useState('');
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [activeTab, setActiveTab] = useState('story');
+  const [analytics, setAnalytics] = useState(null);
   const { user, isAuthenticated } = useSelector((state) => state.auth);
 
   const isSaved = isAuthenticated && user?.savedCampaigns?.includes(campaign?._id);
@@ -72,6 +74,14 @@ const CampaignDetails = () => {
     window.scrollTo(0, 0);
     fetchCampaign();
   }, [id]);
+
+  useEffect(() => {
+    if (isCreator) {
+      apiClient.get(`/campaigns/${id}/analytics`)
+        .then(res => setAnalytics(res.data.data.analytics))
+        .catch(err => console.error('Failed to fetch analytics', err));
+    }
+  }, [id, isCreator]);
 
   const handleShare = () => {
     if (navigator.share) {
@@ -144,29 +154,97 @@ const CampaignDetails = () => {
               </div>
             )}
 
-            {/* Story Section */}
-            <section id="story">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">The Story</h2>
-              <div className="prose dark:prose-invert max-w-none text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
-                {campaign.description}
+            {/* Analytics Dashboard (Creator Only) */}
+            {isCreator && analytics && (
+              <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 p-6 shadow-sm mb-8">
+                <div className="flex items-center gap-2 mb-6">
+                  <Activity className="w-5 h-5 text-blue-500" />
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">Campaign Analytics</h2>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4">
+                    <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 mb-2">
+                      <Target className="w-4 h-4" />
+                      <span className="text-sm font-medium">Goal Amount</span>
+                    </div>
+                    <div className="text-2xl font-bold text-gray-900 dark:text-white">₹{analytics.goalAmount.toLocaleString()}</div>
+                  </div>
+                  <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 border border-blue-100 dark:border-blue-800/30">
+                    <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 mb-2">
+                      <TrendingUp className="w-4 h-4" />
+                      <span className="text-sm font-medium">Raised Amount</span>
+                    </div>
+                    <div className="text-2xl font-bold text-blue-700 dark:text-blue-400">₹{analytics.raisedAmount.toLocaleString()}</div>
+                  </div>
+                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4">
+                    <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 mb-2">
+                      <Activity className="w-4 h-4" />
+                      <span className="text-sm font-medium">Progress</span>
+                    </div>
+                    <div className="text-2xl font-bold text-gray-900 dark:text-white">{Math.round((analytics.raisedAmount / analytics.goalAmount) * 100)}%</div>
+                  </div>
+                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4">
+                    <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 mb-2">
+                      <Users className="w-4 h-4" />
+                      <span className="text-sm font-medium">Total Donors</span>
+                    </div>
+                    <div className="text-2xl font-bold text-gray-900 dark:text-white">{analytics.donorsCount}</div>
+                  </div>
+                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4">
+                    <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 mb-2">
+                      <MessageCircle className="w-4 h-4" />
+                      <span className="text-sm font-medium">Comments</span>
+                    </div>
+                    <div className="text-2xl font-bold text-gray-900 dark:text-white">{analytics.commentsCount}</div>
+                  </div>
+                  <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4">
+                    <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 mb-2">
+                      <Bookmark className="w-4 h-4" />
+                      <span className="text-sm font-medium">Total Saves</span>
+                    </div>
+                    <div className="text-2xl font-bold text-gray-900 dark:text-white">{analytics.savesCount}</div>
+                  </div>
+                </div>
               </div>
-            </section>
+            )}
 
-            <hr className="border-gray-200 dark:border-gray-800" />
+            {/* Tabs Navigation */}
+            <div className="border-b border-gray-200 dark:border-gray-800">
+              <nav className="-mb-px flex space-x-8">
+                {['story', 'updates', 'comments'].map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveTab(tab)}
+                    className={`
+                      whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors
+                      ${activeTab === tab 
+                        ? 'border-blue-500 text-blue-600 dark:text-blue-400' 
+                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300'
+                      }
+                    `}
+                  >
+                    {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                  </button>
+                ))}
+              </nav>
+            </div>
 
-            {/* Updates Section */}
-            <section id="updates">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Updates</h2>
-              <CampaignUpdates campaignId={campaign._id} creatorId={campaign.creator?._id} />
-            </section>
+            {/* Tab Content */}
+            <div className="pt-6">
+              {activeTab === 'story' && (
+                <div className="prose dark:prose-invert max-w-none text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+                  {campaign.description}
+                </div>
+              )}
 
-            <hr className="border-gray-200 dark:border-gray-800" />
+              {activeTab === 'updates' && (
+                <CampaignUpdates campaignId={campaign._id} creatorId={campaign.creator?._id} />
+              )}
 
-            {/* Comments Section */}
-            <section id="comments">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Comments</h2>
-              <CampaignComments campaignId={campaign._id} />
-            </section>
+              {activeTab === 'comments' && (
+                <CampaignComments campaignId={campaign._id} />
+              )}
+            </div>
           </div>
 
           {/* Right Sidebar (Sticky) */}
@@ -236,22 +314,7 @@ const CampaignDetails = () => {
                 </div>
               </div>
 
-              {/* AI Trust Summary */}
-              {campaign.trustScore && (
-                <div className="bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800/30 rounded-2xl p-6">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-semibold text-gray-900 dark:text-white flex items-center">
-                      AI Trust Summary
-                    </h3>
-                    <span className="px-2.5 py-1 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 rounded-full text-xs font-bold">
-                      Score: {campaign.trustScore.score}/100
-                    </span>
-                  </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-                    {campaign.trustScore.explanation}
-                  </p>
-                </div>
-              )}
+              {/* AI Trust Summary hidden for MVP */}
 
               {/* Sharing Quick Links */}
               <div className="flex justify-center space-x-4 pt-4">

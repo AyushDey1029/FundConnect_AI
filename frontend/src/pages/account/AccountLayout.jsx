@@ -60,10 +60,10 @@ const AccountLayout = () => {
           <div className="flex-1">
             <Routes>
               <Route path="/" element={<Overview />} />
-              <Route path="/campaigns" element={<MyCampaigns />} />
-              <Route path="/donations" element={<DonationHistory />} />
-              <Route path="/saved" element={<SavedCampaigns />} />
-              <Route path="/settings" element={<Settings />} />
+              <Route path="campaigns" element={<MyCampaigns />} />
+              <Route path="donations" element={<DonationHistory />} />
+              <Route path="saved" element={<SavedCampaigns />} />
+              <Route path="settings" element={<Settings />} />
             </Routes>
           </div>
         </div>
