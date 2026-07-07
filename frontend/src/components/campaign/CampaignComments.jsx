@@ -7,6 +7,24 @@ import Avatar from '../ui/Avatar';
 import EmptyState from '../ui/EmptyState';
 import { formatDate } from '../../utils/formatDate';
 
+const CommentSkeleton = () => (
+  <div className="space-y-4 animate-pulse">
+    {[1, 2].map((i) => (
+      <div key={i} className="flex gap-4">
+        <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-800" />
+        <div className="flex-1 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl p-4 space-y-2">
+          <div className="flex justify-between">
+            <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded w-1/4" />
+            <div className="h-3 bg-gray-200 dark:bg-gray-800 rounded w-16" />
+          </div>
+          <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded w-5/6" />
+          <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded w-1/2" />
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
 const CampaignComments = ({ campaignId }) => {
   const { user, isAuthenticated } = useSelector(state => state.auth);
   const [comments, setComments] = useState([]);
@@ -68,10 +86,10 @@ const CampaignComments = ({ campaignId }) => {
     }
   };
 
-  if (loading) return <div className="text-gray-500">Loading comments...</div>;
+  if (loading) return <CommentSkeleton />;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 min-h-[120px]">
       {/* New Comment Input */}
       {isAuthenticated ? (
         <div className="flex gap-4 mb-8">

@@ -92,11 +92,21 @@ export const getFeed = catchAsync(async (req, res, next) => {
   const limit = parseInt(req.query.limit, 10) || 10;
   const skip = (page - 1) * limit;
 
-  const campaigns = await Campaign.find({ 
-    status: 'active', 
+  const queryObj = {
+    status: 'active',
     deletedAt: null,
     $expr: { $lt: [{ $ifNull: ["$raisedAmount", 0] }, "$goalAmount"] }
-  })
+  };
+
+  if (req.query.search) {
+    queryObj.$or = [
+      { title: { $regex: req.query.search, $options: 'i' } },
+      { description: { $regex: req.query.search, $options: 'i' } },
+      { category: { $regex: req.query.search, $options: 'i' } }
+    ];
+  }
+
+  const campaigns = await Campaign.find(queryObj)
     .sort({ createdAt: -1 })
     .skip(skip)
     .limit(limit)

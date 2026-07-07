@@ -5,6 +5,29 @@ import apiClient from '../../services/apiClient';
 import Button from '../ui/Button';
 import Avatar from '../ui/Avatar';
 import { formatDate } from '../../utils/formatDate';
+import EmptyState from '../ui/EmptyState';
+
+const UpdateSkeleton = () => (
+  <div className="space-y-8 animate-pulse ml-4 md:ml-6">
+    {[1, 2].map((i) => (
+      <div key={i} className="relative pl-6 md:pl-8">
+        <div className="absolute w-4 h-4 bg-gray-200 dark:bg-gray-800 rounded-full -left-[9px] top-1" />
+        <div className="bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl p-6 space-y-3">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-800" />
+            <div className="space-y-1">
+              <div className="h-3 bg-gray-200 dark:bg-gray-800 rounded w-24" />
+              <div className="h-3 bg-gray-200 dark:bg-gray-800 rounded w-12" />
+            </div>
+          </div>
+          <div className="h-5 bg-gray-200 dark:bg-gray-800 rounded w-1/3" />
+          <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded w-5/6" />
+          <div className="h-4 bg-gray-200 dark:bg-gray-800 rounded w-2/3" />
+        </div>
+      </div>
+    ))}
+  </div>
+);
 
 const CampaignUpdates = ({ campaignId, creatorId }) => {
   const { user, isAuthenticated } = useSelector(state => state.auth);
@@ -87,7 +110,7 @@ const CampaignUpdates = ({ campaignId, creatorId }) => {
     }
   };
 
-  if (loading) return <div className="text-gray-500">Loading updates...</div>;
+  if (loading) return <UpdateSkeleton />;
 
   return (
     <div className="space-y-8">
@@ -161,9 +184,11 @@ const CampaignUpdates = ({ campaignId, creatorId }) => {
 
       {/* Updates Timeline */}
       {updates.length === 0 ? (
-        <div className="text-center py-8">
-          <p className="text-gray-500 dark:text-gray-400">No updates yet.</p>
-        </div>
+        <EmptyState
+          icon={Megaphone}
+          title="No updates posted yet"
+          message="The campaign creator hasn't published any updates. Check back later for the latest news on this project."
+        />
       ) : (
         <div className="relative border-l-2 border-blue-100 dark:border-blue-900/50 ml-4 md:ml-6 space-y-12 pb-8">
           {updates.map((update) => (

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import apiClient from '../services/apiClient';
 
-export const useCampaigns = (endpoint = '/campaigns/feed') => {
+export const useCampaigns = (endpoint = '/campaigns/feed', params = {}) => {
   const [campaigns, setCampaigns] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -9,12 +9,21 @@ export const useCampaigns = (endpoint = '/campaigns/feed') => {
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
 
+  const paramsKey = JSON.stringify(params);
+
   const fetchCampaigns = useCallback(async (pageNum = 1, append = false) => {
     try {
       if (pageNum === 1) setLoading(true);
       else setLoadingMore(true);
       
-      const response = await apiClient.get(`${endpoint}?page=${pageNum}&limit=5`);
+      const serializedParams = JSON.parse(paramsKey);
+      const queryParams = new URLSearchParams({
+        page: pageNum,
+        limit: 5,
+        ...serializedParams
+      }).toString();
+      
+      const response = await apiClient.get(`${endpoint}?${queryParams}`);
       
       const fetchedCampaigns = response.data.data.campaigns || [];
       
@@ -32,7 +41,7 @@ export const useCampaigns = (endpoint = '/campaigns/feed') => {
       setLoading(false);
       setLoadingMore(false);
     }
-  }, [endpoint]);
+  }, [endpoint, paramsKey]);
 
   useEffect(() => {
     setPage(1);
