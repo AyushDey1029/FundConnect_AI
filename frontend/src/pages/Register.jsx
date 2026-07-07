@@ -5,6 +5,7 @@ import apiClient from '../services/apiClient.js';
 import { loginSuccess } from '../store/authSlice.js';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff } from 'lucide-react';
+import Button from '../components/ui/Button';
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -104,13 +105,14 @@ const Register = () => {
             </div>
           </div>
 
-          <button
+          <Button
             type="submit"
-            disabled={loading}
-            className={`w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors mt-2 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+            isLoading={loading}
+            fullWidth
+            className="py-3 mt-2"
           >
-            {loading ? 'Creating Account...' : 'Sign Up'}
-          </button>
+            Sign Up
+          </Button>
         </form>
 
         <p className="mt-6 text-center text-gray-600 dark:text-gray-400">
